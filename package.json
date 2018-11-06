@@ -8,7 +8,7 @@
     "build": "tsc",
     "clean": "rm -rf dist",
     "lint": "tslint -c tslint.json -p tsconfig.json './src/**/*.{js,ts}'",
-    "prepare": "run-s clean build",
+    "prepublishOnly": "run-s clean build",
     "test": "jest"
   },
   "repository": {
