@@ -1,0 +1,23 @@
+language: node_js
+node_js:
+- 8
+cache:
+  directories:
+  - $HOME/.npm
+jobs:
+  fast_finish: true
+  include:
+  - stage: precache
+    name: "Prepare Cache"
+    script: true
+  - stage: test
+    name: "Lint"
+    script: npm run lint
+  - name: "Unit Tests"
+    script: npm run coverage -- --maxWorkers=4 --ci
+  - stage: build
+    name: "Compile"
+    script: npm run build
+branches:
+  only:
+  - master
