@@ -1,3 +1,5 @@
+import { snakeCase, toUpper } from 'lodash';
+
 import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
 import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
 
@@ -24,6 +26,14 @@ export class ApiBuilderEnumValue {
    */
   get name() {
     return this.config.name;
+  }
+
+  /**
+   * A string used to identify this enumeration value. Useful for naming the
+   * variable corresponding to this enumeration value in code generators.
+   */
+  get nickname() {
+    return toUpper(snakeCase(this.name));
   }
 
   /**

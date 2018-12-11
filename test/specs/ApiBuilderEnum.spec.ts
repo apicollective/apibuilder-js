@@ -21,6 +21,11 @@ describe('ApiBuilderEnum', () => {
     });
   });
 
+  test('should have pascal case nickname', () => {
+    const instance = ApiBuilderEnum.fromConfig(enumerations.original_type, service);
+    expect(instance).toHaveProperty('nickname', 'OriginalType');
+  });
+
   test('should be deprecated', () => {
     const enumeration = createMockEnum({ deprecation: createMockDeprecation() });
     const instance = ApiBuilderEnum.fromConfig(enumeration, service);
