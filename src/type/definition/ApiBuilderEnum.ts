@@ -1,5 +1,5 @@
 import invariant from 'invariant';
-import { map } from 'lodash';
+import { camelCase, map, upperFirst } from 'lodash';
 import { FullyQualifiedName } from '../../language';
 import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
 import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
@@ -76,6 +76,14 @@ export class ApiBuilderEnum {
 
   get name() {
     return this.config.name;
+  }
+
+  /**
+   * A string used to identify this enumeration. Useful for naming the variable
+   * corresponding to this enumeration in code generators.
+   */
+  get nickname() {
+    return upperFirst(camelCase(this.name));
   }
 
   get plural() {
