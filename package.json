@@ -1,5 +1,5 @@
 {
-  "name": "apibuilder",
+  "name": "apibuilder-js",
   "version": "0.0.0",
   "description": "A reference implementation of API Builder for JavaScript",
   "main": "dist/index.js",
