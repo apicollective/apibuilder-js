@@ -1,5 +1,5 @@
 import pluralize from 'pluralize';
-import { find, map, matchesProperty, overSome } from 'lodash';
+import { find, matchesProperty, overSome } from 'lodash';
 import { ApiBuilderEnum, ApiBuilderEnumConfig } from './ApiBuilderEnum';
 import { ApiBuilderModel, ApiBuilderModelConfig } from './ApiBuilderModel';
 import { ApiBuilderUnion, ApiBuilderUnionConfig } from './ApiBuilderUnion';
@@ -49,7 +49,7 @@ export class ApiBuilderImport {
   }
 
   get enums() {
-    return map(this.config.enums, (enumeration) => {
+    const enums = this.config.enums.map((enumeration) => {
       const config: ApiBuilderEnumConfig = {
         name: enumeration,
         plural: pluralize(enumeration),
@@ -58,10 +58,12 @@ export class ApiBuilderImport {
       };
       return ApiBuilderEnum.fromConfig(config, this.service, this.namespace);
     });
+    Object.defineProperty(this, 'enums', { value: enums });
+    return enums;
   }
 
   get models() {
-    return map(this.config.models, (model) => {
+    const models = this.config.models.map((model) => {
       const config: ApiBuilderModelConfig = {
         name: model,
         plural: pluralize(model),
@@ -70,10 +72,12 @@ export class ApiBuilderImport {
       };
       return ApiBuilderModel.fromConfig(config, this.service, this.namespace);
     });
+    Object.defineProperty(this, 'models', { value: models });
+    return models;
   }
 
   get unions() {
-    return map(this.config.unions, (union) => {
+    const unions = this.config.unions.map((union) => {
       const config: ApiBuilderUnionConfig = {
         name: union,
         plural: pluralize(union),
@@ -82,6 +86,8 @@ export class ApiBuilderImport {
       };
       return ApiBuilderUnion.fromConfig(config, this.service, this.namespace);
     });
+    Object.defineProperty(this, 'unions', { value: unions });
+    return unions;
   }
 
   public findEnumByName(name: string) {

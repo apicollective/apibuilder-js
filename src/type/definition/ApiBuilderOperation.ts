@@ -1,11 +1,27 @@
 import { flow, get, getOr, inRange } from 'lodash/fp';
-
 import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
+import { ApiBuilderBodyConfig } from './ApiBuilderBody';
 import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
 import { ApiBuilderParameter, ApiBuilderParameterConfig } from './ApiBuilderParameter';
-import { ApiBuilderMethod, ApiBuilderBodyConfig, ApiBuilderResponseConfig, ApiBuilderResource } from './ApiBuilderResource';
+import { ApiBuilderResource } from './ApiBuilderResource';
+import { ApiBuilderResponseConfig } from './ApiBuilderResponse';
 import { ApiBuilderService } from './ApiBuilderService';
 import { astFromTypeName, typeFromAst } from '../../language';
+
+/**
+ * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#enum-method
+ */
+export enum ApiBuilderMethod {
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  PATCH = 'PATCH',
+  DELETE = 'DELETE',
+  HEAD = 'HEAD',
+  CONNECT = 'CONNECT',
+  OPTIONS = 'OPTIONS',
+  TRACE = 'TRACE',
+}
 
 export interface ApiBuilderOperationConfig {
   readonly method: ApiBuilderMethod;

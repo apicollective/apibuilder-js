@@ -1,5 +1,4 @@
 import invariant from 'invariant';
-import { map } from 'lodash';
 import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
 import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
 import { ApiBuilderService } from './ApiBuilderService';
@@ -76,7 +75,7 @@ export class ApiBuilderModel {
   }
 
   get fields() {
-    return map(this.config.fields, field => new ApiBuilderField(field, this.service));
+    return this.config.fields.map(field => new ApiBuilderField(field, this.service));
   }
 
   public toString() {

@@ -1,5 +1,5 @@
 import invariant from 'invariant';
-import { camelCase, map, upperFirst } from 'lodash';
+import { camelCase, upperFirst } from 'lodash';
 import { FullyQualifiedName } from '../../language';
 import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
 import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
@@ -95,7 +95,7 @@ export class ApiBuilderEnum {
   }
 
   get values() {
-    return map(this.config.values, value => new ApiBuilderEnumValue(value));
+    return this.config.values.map(value => new ApiBuilderEnumValue(value));
   }
 
   get attributes() {

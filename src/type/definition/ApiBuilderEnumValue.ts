@@ -1,5 +1,4 @@
 import { snakeCase, toUpper } from 'lodash';
-
 import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
 import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
 

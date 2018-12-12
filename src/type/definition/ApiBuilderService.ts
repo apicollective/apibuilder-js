@@ -1,26 +1,11 @@
-import { find, flatMap, map, matchesProperty, memoize, overSome, property, ArrayIterator } from 'lodash';
+import { flatMap, matchesProperty, overSome } from 'lodash';
 import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
 import { ApiBuilderEnum, ApiBuilderEnumConfig } from './ApiBuilderEnum';
+import { ApiBuilderHeaderConfig } from './ApiBuilderHeader';
 import { ApiBuilderImport, ApiBuilderImportConfig } from './ApiBuilderImport';
 import { ApiBuilderModel, ApiBuilderModelConfig } from './ApiBuilderModel';
-import { ApiBuilderResource, ApiBuilderResourceConfig, ApiBuilderHeaderConfig } from './ApiBuilderResource';
+import { ApiBuilderResource, ApiBuilderResourceConfig } from './ApiBuilderResource';
 import { ApiBuilderUnion, ApiBuilderUnionConfig } from './ApiBuilderUnion';
-
-const cache = new Map();
-
-function cacheable<T, TResult>(iteratee: ArrayIterator<T, TResult>) {
-  return function iterator(value: T, index: number, collection: T[]) {
-    const cachedValue: TResult | undefined = cache.get(value);
-
-    if (cachedValue) {
-      return cachedValue;
-    }
-
-    const resultValue = iteratee(value, index, collection);
-    cache.set(value, resultValue);
-    return resultValue;
-  };
-}
 
 export interface ApiBuilderApiDocConfig {
   readonly version: string;
@@ -113,99 +98,33 @@ export class ApiBuilderService {
   }
 
   get imports() {
-    return map(this.config.imports, config => new ApiBuilderImport(config, this));
+    const imports = this.config.imports.map(config => new ApiBuilderImport(config, this));
+    Object.defineProperty(this, 'imports', { value: imports });
+    return imports;
   }
 
   get enums() {
-    return [
-      ...this.internalEnums,
-      ...this.externalEnums,
-    ];
+    const enums = this.config.enums.map(config => ApiBuilderEnum.fromConfig(config, this));
+    Object.defineProperty(this, 'enums', { value: enums });
+    return enums;
   }
 
   get models() {
-    return [
-      ...this.internalModels,
-      ...this.externalModels,
-    ];
+    const models = this.config.models.map(config => ApiBuilderModel.fromConfig(config, this));
+    Object.defineProperty(this, 'models', { value: models });
+    return models;
   }
 
   get unions() {
-    return [
-      ...this.internalUnions,
-      ...this.externalUnions,
-    ];
-  }
-
-  get types() {
-    return [
-      ...this.internalTypes,
-      ...this.externalTypes,
-    ];
-  }
-
-  get internalEnums() {
-    return map(this.config.enums, (config) => {
-      const cachedEnumeration: ApiBuilderEnum | undefined = cache.get(config);
-      if (cachedEnumeration) return cachedEnumeration;
-      const enumeration = ApiBuilderEnum.fromConfig(config, this);
-      cache.set(config, enumeration);
-      return enumeration;
-    });
-  }
-
-  get internalModels() {
-    return map(this.config.models, (config) => {
-      const cachedModel: ApiBuilderModel | undefined = cache.get(config);
-      if (cachedModel) return cachedModel;
-      const model = ApiBuilderModel.fromConfig(config, this);
-      cache.set(config, model);
-      return model;
-    });
-  }
-
-  get internalUnions() {
-    return map(this.config.unions, (config) => {
-      const cachedUnion: ApiBuilderUnion | undefined = cache.get(config);
-      if (cachedUnion) return cachedUnion;
-      const union = ApiBuilderUnion.fromConfig(config, this);
-      cache.set(config, union);
-      return union;
-    });
-  }
-
-  get internalTypes() {
-    return [
-      ...this.internalEnums,
-      ...this.internalModels,
-      ...this.internalUnions,
-    ];
-  }
-
-  get externalEnums() {
-    return flatMap(this.imports, im => im.enums);
-  }
-
-  get externalModels() {
-    return flatMap(this.imports, im => im.models);
-  }
-
-  get externalUnions() {
-    return flatMap(this.imports, im => im.unions);
-  }
-
-  get externalTypes() {
-    return [
-      ...this.externalEnums,
-      ...this.externalModels,
-      ...this.externalUnions,
-    ];
+    const unions = this.config.unions.map(config => ApiBuilderUnion.fromConfig(config, this));
+    Object.defineProperty(this, 'unions', { value: unions });
+    return unions;
   }
 
   get resources() {
-    return map(this.config.resources, (
-      resource => new ApiBuilderResource(resource, this)
-    ));
+    const resources = this.config.resources.map(resource => new ApiBuilderResource(resource, this));
+    Object.defineProperty(this, 'resources', { value: resources });
+    return resources;
   }
 
   get baseUrl() {
@@ -214,14 +133,22 @@ export class ApiBuilderService {
 
   public findTypeByName(typeName: string): ApiBuilderEnum | ApiBuilderModel | ApiBuilderUnion | undefined {
     // By definition, a field or union type whose name is not fully qualified
-    // implies the type is defined internally, that is such type is not imported.
-    // Since internal types precede external types in the list of types held
-    // by this object, we can guarantee that searching for a type by name will
-    // honor this rule.
-    return find(this.types, overSome([
+    // implies the type is defined internally, that is such type is not
+    // imported. In order to honor this rule, this utility will scan for
+    // internal types matching the provided name before scanning imported types.
+    const predicate = overSome([
       matchesProperty('shortName', typeName),
       matchesProperty('baseTypeName', typeName),
-    ]));
+    ]);
+
+    return (
+      this.enums.find(predicate)
+      || this.models.find(predicate)
+      || this.unions.find(predicate)
+      || flatMap(this.imports, 'enums').find(predicate)
+      || flatMap(this.imports, 'models').find(predicate)
+      || flatMap(this.imports, 'unions').find(predicate)
+    );
   }
 
   public toString() {
