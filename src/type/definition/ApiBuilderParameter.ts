@@ -6,10 +6,10 @@ import { astFromTypeName, typeFromAst } from '../../language';
  * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#enum-parameter_location
  */
 export enum ApiBuilderParameterLocation {
-  PATH = 'Path',
-  QUERY = 'Query',
-  FORM = 'Form',
-  HEADER = 'Header',
+  Path = 'Path',
+  Query = 'Query',
+  Form = 'Form',
+  Header = 'Header',
 }
 
 /**
@@ -18,7 +18,7 @@ export enum ApiBuilderParameterLocation {
 export interface ApiBuilderParameterConfig {
   readonly name: string;
   readonly type: string;
-  readonly location: ApiBuilderParameterLocation;
+  readonly location: ApiBuilderParameterLocation | keyof typeof ApiBuilderParameterLocation;
   readonly description?: string;
   readonly deprecation?: ApiBuilderDeprecationConfig;
   readonly required: boolean;

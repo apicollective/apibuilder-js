@@ -24,7 +24,7 @@ export enum ApiBuilderMethod {
 }
 
 export interface ApiBuilderOperationConfig {
-  readonly method: ApiBuilderMethod;
+  readonly method: ApiBuilderMethod | keyof typeof ApiBuilderMethod;
   readonly path: string;
   readonly description?: string;
   readonly deprecation?: ApiBuilderDeprecationConfig;

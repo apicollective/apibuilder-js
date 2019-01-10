@@ -6,6 +6,7 @@ import { ApiBuilderImport, ApiBuilderImportConfig } from './ApiBuilderImport';
 import { ApiBuilderModel, ApiBuilderModelConfig } from './ApiBuilderModel';
 import { ApiBuilderResource, ApiBuilderResourceConfig } from './ApiBuilderResource';
 import { ApiBuilderUnion, ApiBuilderUnionConfig } from './ApiBuilderUnion';
+import { ApiBuilderAnnotationConfig } from './ApiBuilderAnnotation';
 
 export interface ApiBuilderApiDocConfig {
   readonly version: string;
@@ -64,6 +65,7 @@ export interface ApiBuilderServiceConfig {
   readonly models: ReadonlyArray<ApiBuilderModelConfig>;
   readonly resources: ReadonlyArray<ApiBuilderResourceConfig>;
   readonly attributes: ReadonlyArray<ApiBuilderAttributeConfig>;
+  readonly annotations: ReadonlyArray<ApiBuilderAnnotationConfig>;
 }
 
 /**

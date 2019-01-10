@@ -1,5 +1,6 @@
 import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
 import { ApiBuilderHeaderConfig } from './ApiBuilderHeader';
+import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
 
 /**
  * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#enum-response_code_option
@@ -34,4 +35,5 @@ export interface ApiBuilderResponseConfig {
   readonly headers?: ReadonlyArray<ApiBuilderHeaderConfig>;
   readonly description?: string;
   readonly deprecation?: ApiBuilderDeprecationConfig;
+  readonly attributes: ReadonlyArray<ApiBuilderAttributeConfig>;
 }

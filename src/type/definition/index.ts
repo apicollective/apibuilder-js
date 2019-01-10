@@ -1,3 +1,4 @@
+export * from './ApiBuilderAnnotation';
 export * from './ApiBuilderArray';
 export * from './ApiBuilderAttribute';
 export * from './ApiBuilderBody';
