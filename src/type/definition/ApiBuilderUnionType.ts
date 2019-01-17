@@ -33,6 +33,10 @@ export class ApiBuilderUnionType {
     return typeFromAst(astFromTypeName(this.config.type), this.service);
   }
 
+  get typeName() {
+    return this.config.type;
+  }
+
   get description() {
     return this.config.description;
   }
