@@ -82,7 +82,7 @@ export class ApiBuilderUnion {
   }
 
   get discriminator() {
-    return this.config.discriminator;
+    return this.config.discriminator || 'discriminator';
   }
 
   get description() {
