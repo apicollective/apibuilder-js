@@ -4,9 +4,8 @@ import { ApiBuilderBodyConfig } from './ApiBuilderBody';
 import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
 import { ApiBuilderParameter, ApiBuilderParameterConfig } from './ApiBuilderParameter';
 import { ApiBuilderResource } from './ApiBuilderResource';
-import { ApiBuilderResponseConfig } from './ApiBuilderResponse';
+import { ApiBuilderResponseConfig, ApiBuilderResponseCodeIntegerType, ApiBuilderResponse } from './ApiBuilderResponse';
 import { ApiBuilderService } from './ApiBuilderService';
-import { astFromTypeName, typeFromAst } from '../../language';
 
 /**
  * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#enum-method
@@ -76,33 +75,41 @@ export class ApiBuilderOperation {
   }
 
   get url() {
-    return `${this.service.baseUrl}${this.resource.path}${this.path}`;
+    return `${this.service.baseUrl}${this.config.path}`;
   }
 
   get path() {
-    if (this.resource.path && this.config.path.startsWith(this.resource.path)) {
-      return this.config.path.substring(this.resource.path.length);
-    }
-
     return this.config.path;
-  }
-
-  get resultType() {
-    const type = getOr(
-      'unit',
-      'type',
-      this.config.responses.find(flow(
-        get('code.integer.value'),
-        inRange(200, 300),
-      )),
-    );
-
-    return typeFromAst(astFromTypeName(type), this.service);
   }
 
   get parameters() {
     return this.config.parameters.map((
       parameter => new ApiBuilderParameter(parameter, this.service)
     ));
+  }
+
+  get responses() {
+    return this.config.responses.map((response) => {
+      return new ApiBuilderResponse(response, this.service);
+    });
+  }
+
+  /**
+   * Returns the type for the response matching the specified response code.
+   * @param responseCode {number}
+   * @param useDefault {boolean}
+   * Indicates whether to fallback to the default response object for all
+   * HTTP codes that are not covered individually by the specification.
+   */
+  getResponseTypeByCode(responseCode: number, useDefault: boolean = false) {
+    let response = this.responses.find(response => response.code === responseCode);
+
+    if (useDefault && response == null) {
+      response = this.responses.find(response => response.isDefault);
+    }
+
+    if (response != null) {
+      return response.type;
+    }
   }
 }

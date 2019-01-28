@@ -36,6 +36,10 @@ export class ApiBuilderResource {
     return typeFromAst(astFromTypeName(this.config.type), this.service);
   }
 
+  get typeName() {
+    return this.config.type;
+  }
+
   get plural() {
     return this.config.plural;
   }
