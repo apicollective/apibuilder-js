@@ -1,6 +1,6 @@
 {
   "name": "apibuilder-js",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A reference implementation of API Builder for JavaScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
