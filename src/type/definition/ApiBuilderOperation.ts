@@ -95,21 +95,33 @@ export class ApiBuilderOperation {
   }
 
   /**
-   * Returns the type for the response matching the specified response code.
-   * @param responseCode {number}
-   * @param useDefault {boolean}
+   * Returns the response object matching the specified response code.
+   * @param responseCode
+   * @param useDefault
    * Indicates whether to fallback to the default response object for all
    * HTTP codes that are not covered individually by the specification.
    */
-  getResponseTypeByCode(responseCode: number, useDefault: boolean = false) {
-    let response = this.responses.find(response => response.code === responseCode);
-
-    if (useDefault && response == null) {
-      response = this.responses.find(response => response.isDefault);
-    }
+  getResponseByCode(responseCode: number, useDefault: boolean = false) {
+    const response = this.responses.find(response => response.code === responseCode);
 
     if (response != null) {
-      return response.type;
+      return response;
     }
+
+    if (useDefault) {
+      return this.responses.find(response => response.isDefault);
+    }
+  }
+
+  /**
+   * Returns the type for the response matching the specified response code.
+   * @param responseCode
+   * @param useDefault
+   * Indicates whether to fallback to the default response object for all
+   * HTTP codes that are not covered individually by the specification.
+   */
+  getResponseTypeByCode(responseCode: number, useDefault?: boolean) {
+    const response = this.getResponseByCode(responseCode, useDefault);
+    return response != null ? response.type : undefined;
   }
 }
