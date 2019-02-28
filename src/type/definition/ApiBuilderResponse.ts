@@ -62,7 +62,7 @@ export class ApiBuilderResponse {
   get isDefault() {
     if ((<ApiBuilderResponseCodeOptionType>this.config.code).response_code_option) {
       // tslint:disable-next-line max-line-length
-      (<ApiBuilderResponseCodeOptionType>this.config.code).response_code_option === ApiBuilderResponseCodeOption.DEFAULT;
+      return (<ApiBuilderResponseCodeOptionType>this.config.code).response_code_option === ApiBuilderResponseCodeOption.DEFAULT;
     }
 
     return false;

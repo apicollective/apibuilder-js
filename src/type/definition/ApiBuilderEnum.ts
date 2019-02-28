@@ -111,4 +111,8 @@ export class ApiBuilderEnum {
       return this.config.deprecation.description;
     }
   }
+
+  public toString() {
+    return this.fullName;
+  }
 }
