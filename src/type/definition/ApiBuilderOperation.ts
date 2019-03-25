@@ -48,6 +48,12 @@ export class ApiBuilderOperation {
     this.resource = resource;
   }
 
+  get body() {
+    if (this.config.body) {
+      return this.config.body;
+    }
+  }
+
   get method() {
     return this.config.method;
   }
