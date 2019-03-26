@@ -91,6 +91,14 @@ export class ApiBuilderService {
     return this.config.version;
   }
 
+  get description () {
+    return this.config.description;
+  }
+
+  get info () {
+    return this.config.info;
+  }
+
   get applicationKey() {
     return this.config.application.key;
   }

@@ -70,6 +70,10 @@ export class ApiBuilderModel {
     return this.fullyQualifiedName.packageName;
   }
 
+  get isDeprecated() {
+    return this.config.deprecation != null;
+  }
+
   get description() {
     return this.config.description;
   }

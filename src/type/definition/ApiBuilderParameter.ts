@@ -49,6 +49,10 @@ export class ApiBuilderParameter {
     return this.config.default;
   }
 
+  get deprecation() {
+    return this.config.deprecation;
+  }
+
   get description() {
     return this.config.description;
   }
