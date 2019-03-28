@@ -35,7 +35,7 @@ export interface ApiBuilderOperationConfig {
 
 export class ApiBuilderOperation {
   private config: ApiBuilderOperationConfig;
-  private resource: ApiBuilderResource;
+  public resource: ApiBuilderResource;
   private service: ApiBuilderService;
 
   constructor(
