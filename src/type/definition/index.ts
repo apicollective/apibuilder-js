@@ -5,6 +5,7 @@ export * from './ApiBuilderBody';
 export * from './ApiBuilderDeprecation';
 export * from './ApiBuilderEnum';
 export * from './ApiBuilderEnumValue';
+export * from './ApiBuilderInvocationForm';
 export * from './ApiBuilderField';
 export * from './ApiBuilderFile';
 export * from './ApiBuilderHeader';
