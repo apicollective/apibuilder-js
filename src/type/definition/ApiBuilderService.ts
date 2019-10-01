@@ -131,6 +131,50 @@ export class ApiBuilderService {
     return unions;
   }
 
+  get typesByFullName() {
+    const typesByFullName: Record<string, ApiBuilderEnum | ApiBuilderModel | ApiBuilderUnion> = {};
+
+    this.enums.forEach((enumeration) => {
+      typesByFullName[enumeration.fullName] = enumeration;
+    });
+
+    this.models.forEach((model) => {
+      typesByFullName[model.fullName] = model;
+    });
+
+    this.unions.forEach((union) => {
+      typesByFullName[union.fullName] = union;
+    });
+
+    Object.defineProperty(this, 'typesByFullName', {
+      value: typesByFullName,
+    });
+
+    return typesByFullName;
+  }
+
+  get typesByShortName() {
+    const typesByShortName: Record<string, ApiBuilderEnum | ApiBuilderModel | ApiBuilderUnion> = {};
+
+    this.enums.forEach((enumeration) => {
+      typesByShortName[enumeration.shortName] = enumeration;
+    });
+
+    this.models.forEach((model) => {
+      typesByShortName[model.shortName] = model;
+    });
+
+    this.unions.forEach((union) => {
+      typesByShortName[union.shortName] = union;
+    });
+
+    Object.defineProperty(this, 'typesByShortName', {
+      value: typesByShortName,
+    });
+
+    return typesByShortName;
+  }
+
   get resources() {
     const resources = this.config.resources.map(resource => new ApiBuilderResource(resource, this));
     Object.defineProperty(this, 'resources', { value: resources });
@@ -141,21 +185,28 @@ export class ApiBuilderService {
     return this.config.base_url;
   }
 
-  public findTypeByName(typeName: string): ApiBuilderEnum | ApiBuilderModel | ApiBuilderUnion | undefined {
-    // By definition, a field or union type whose name is not fully qualified
-    // implies the type is defined internally, that is such type is not
-    // imported. In order to honor this rule, this utility will scan for
-    // internal types matching the provided name before scanning imported types.
+  /**
+   * Returns the type matching the specified identifier, or `undefined` otherwise.
+   * @param typeName
+   */
+  public findTypeByName(
+    typeName: string,
+  ): ApiBuilderEnum | ApiBuilderModel | ApiBuilderUnion | undefined {
+    if (this.typesByFullName[typeName] != null) {
+      return this.typesByFullName[typeName];
+    }
+
+    if (this.typesByShortName[typeName] != null) {
+      return this.typesByShortName[typeName];
+    }
+
     const predicate = overSome([
       matchesProperty('shortName', typeName),
       matchesProperty('baseTypeName', typeName),
     ]);
 
     return (
-      this.enums.find(predicate)
-      || this.models.find(predicate)
-      || this.unions.find(predicate)
-      || flatMap(this.imports, 'enums').find(predicate)
+      flatMap(this.imports, 'enums').find(predicate)
       || flatMap(this.imports, 'models').find(predicate)
       || flatMap(this.imports, 'unions').find(predicate)
     );
