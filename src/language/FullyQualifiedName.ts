@@ -3,10 +3,13 @@ import { AstNode, EnclosingTypeNode, astFromTypeName } from './ast';
 import { Regex } from './constants';
 import { isArrayTypeName, isMapTypeName, isPrimitiveTypeName } from './predicates';
 
+export function isFullyQualifiedName(identifier: string) {
+  return isPrimitiveTypeName(identifier) || getBaseTypeName(identifier).lastIndexOf('.') >= 0;
+}
+
 export function assertFullyQualifiedName(fullyQualifiedName: string) {
   invariant(
-    getBaseTypeName(fullyQualifiedName).lastIndexOf('.') >= 0
-    || isPrimitiveTypeName(fullyQualifiedName),
+    isFullyQualifiedName(fullyQualifiedName),
     `"${fullyQualifiedName}" is not a valid fully qualified name. `
     + 'A fully qualified name may be the name of a primitive type, '
     + 'or a string consisting of a package name followed by the base '
