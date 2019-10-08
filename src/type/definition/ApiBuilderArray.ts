@@ -12,7 +12,7 @@ export class ApiBuilderArray {
     this.ofType = ofType;
   }
 
-  public toString() {
+  public toString(): string {
     return `[${String(this.ofType)}]`;
   }
 }

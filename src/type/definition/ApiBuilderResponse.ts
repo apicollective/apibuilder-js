@@ -1,71 +1,36 @@
-import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
-import { ApiBuilderHeaderConfig } from './ApiBuilderHeader';
-import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
+import { Response } from '../../generated/types/apibuilder-spec';
 import { typeFromAst, astFromTypeName } from '../../language';
 import { ApiBuilderService } from './ApiBuilderService';
 
-/**
- * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#enum-response_code_option
- */
-export enum ApiBuilderResponseCodeOption {
-  DEFAULT = 'Default',
-}
-
-interface IntegerValueType {
-  readonly value: number;
-}
-
-export interface ApiBuilderResponseCodeIntegerType {
-  readonly integer: IntegerValueType;
-}
-
-export interface ApiBuilderResponseCodeOptionType {
-  readonly response_code_option: ApiBuilderResponseCodeOption;
-}
-
-/**
- * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#union-response_code
- */
-export type ApiBuilderResponseCode = ApiBuilderResponseCodeIntegerType | ApiBuilderResponseCodeOptionType;
-
-/**
- * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#model-response
- */
-export interface ApiBuilderResponseConfig {
-  readonly code: ApiBuilderResponseCode;
-  readonly type: string;
-  readonly headers?: ReadonlyArray<ApiBuilderHeaderConfig>;
-  readonly description?: string;
-  readonly deprecation?: ApiBuilderDeprecationConfig;
-  readonly attributes: ReadonlyArray<ApiBuilderAttributeConfig>;
-}
-
 export class ApiBuilderResponse {
-  private config: ApiBuilderResponseConfig;
+  private config: Response;
   private service: ApiBuilderService;
 
-  constructor(config: ApiBuilderResponseConfig, service: ApiBuilderService) {
+  constructor(config: Response, service: ApiBuilderService) {
     this.config = config;
     this.service = service;
   }
 
   get code() {
-    if ((<ApiBuilderResponseCodeIntegerType>this.config.code).integer) {
-      return (<ApiBuilderResponseCodeIntegerType>this.config.code).integer.value;
+    switch (this.config.code.discriminator) {
+      case 'integer':
+        return this.config.code.value;
+      default:
+        return undefined;
     }
   }
 
   /**
-   * Indicates this is the default response object for all HTTP codes that are not covered
-   * individually by the specification.
+   * Indicates this is the default response object for all HTTP codes that are
+   * not covered individually by the specification.
    */
   get isDefault() {
-    if ((<ApiBuilderResponseCodeOptionType>this.config.code).response_code_option) {
-      // tslint:disable-next-line max-line-length
-      return (<ApiBuilderResponseCodeOptionType>this.config.code).response_code_option === ApiBuilderResponseCodeOption.DEFAULT;
+    switch (this.config.code.discriminator) {
+      case 'integer':
+        return false;
+      default:
+        return this.config.code.value === 'Default';
     }
-
-    return false;
   }
 
   get type() {

@@ -1,21 +1,12 @@
 import invariant from 'invariant';
-import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
-import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
+
 import { ApiBuilderService } from './ApiBuilderService';
-import { ApiBuilderField, ApiBuilderFieldConfig } from './ApiBuilderField';
+import { ApiBuilderField } from './ApiBuilderField';
+import { Model } from '../../generated/types/apibuilder-spec';
 import { FullyQualifiedName } from '../../language';
 
-export interface ApiBuilderModelConfig {
-  readonly name: string;
-  readonly plural: string;
-  readonly description?: string;
-  readonly deprecation?: ApiBuilderDeprecationConfig;
-  readonly fields: ReadonlyArray<ApiBuilderFieldConfig>;
-  readonly attributes: ReadonlyArray<ApiBuilderAttributeConfig>;
-}
-
 export class ApiBuilderModel {
-  private config: ApiBuilderModelConfig;
+  private config: Model;
   private fullyQualifiedName: FullyQualifiedName;
   private service: ApiBuilderService;
 
@@ -24,7 +15,7 @@ export class ApiBuilderModel {
    * model definition.
    */
   public static fromConfig(
-    config: ApiBuilderModelConfig,
+    config: Model,
     service: ApiBuilderService,
     namespace: string = service.namespace,
   ) {
@@ -34,7 +25,7 @@ export class ApiBuilderModel {
 
   constructor(
     fullyQualifiedName: FullyQualifiedName,
-    config: ApiBuilderModelConfig,
+    config: Model,
     service: ApiBuilderService,
   ) {
     invariant(

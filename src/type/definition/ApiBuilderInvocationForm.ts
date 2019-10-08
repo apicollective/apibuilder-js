@@ -1,16 +1,10 @@
-import { ApiBuilderServiceConfig, ApiBuilderService } from './ApiBuilderService';
-
-export interface ApiBuilderInvocationFormConfig {
-  attributes: ({ name: string, value: string })[];
-  service: ApiBuilderServiceConfig;
-  imported_services?: ApiBuilderServiceConfig[];
-  user_agent?: string;
-}
+import { InvocationForm } from '../../generated/types/apibuilder-generator';
+import { ApiBuilderService } from './ApiBuilderService';
 
 export class ApiBuilderInvocationForm {
-  config: ApiBuilderInvocationFormConfig;
+  config: InvocationForm;
 
-  constructor(config: ApiBuilderInvocationFormConfig) {
+  constructor(config: InvocationForm) {
     this.config = config;
   }
 

@@ -1,45 +1,16 @@
-import { flow, get, getOr, inRange } from 'lodash/fp';
-import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
-import { ApiBuilderBodyConfig } from './ApiBuilderBody';
-import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
-import { ApiBuilderParameter, ApiBuilderParameterConfig } from './ApiBuilderParameter';
+import { Operation } from '../../generated/types/apibuilder-spec';
+import { ApiBuilderParameter } from './ApiBuilderParameter';
 import { ApiBuilderResource } from './ApiBuilderResource';
-import { ApiBuilderResponseConfig, ApiBuilderResponseCodeIntegerType, ApiBuilderResponse } from './ApiBuilderResponse';
+import { ApiBuilderResponse } from './ApiBuilderResponse';
 import { ApiBuilderService } from './ApiBuilderService';
 
-/**
- * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#enum-method
- */
-export enum ApiBuilderMethod {
-  GET = 'GET',
-  POST = 'POST',
-  PUT = 'PUT',
-  PATCH = 'PATCH',
-  DELETE = 'DELETE',
-  HEAD = 'HEAD',
-  CONNECT = 'CONNECT',
-  OPTIONS = 'OPTIONS',
-  TRACE = 'TRACE',
-}
-
-export interface ApiBuilderOperationConfig {
-  readonly method: ApiBuilderMethod | keyof typeof ApiBuilderMethod;
-  readonly path: string;
-  readonly description?: string;
-  readonly deprecation?: ApiBuilderDeprecationConfig;
-  readonly body?: ApiBuilderBodyConfig;
-  readonly parameters: ReadonlyArray<ApiBuilderParameterConfig>;
-  readonly responses: ReadonlyArray<ApiBuilderResponseConfig>;
-  readonly attributes: ReadonlyArray<ApiBuilderAttributeConfig>;
-}
-
 export class ApiBuilderOperation {
-  private config: ApiBuilderOperationConfig;
+  private config: Operation;
   public resource: ApiBuilderResource;
   private service: ApiBuilderService;
 
   constructor(
-    config: ApiBuilderOperationConfig,
+    config: Operation,
     resource: ApiBuilderResource,
     service: ApiBuilderService,
   ) {

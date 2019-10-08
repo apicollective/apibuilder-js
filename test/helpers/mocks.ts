@@ -1,20 +1,16 @@
 import faker from 'faker';
 import defaultTo from 'lodash/defaultTo';
-import {
-  ApiBuilderDeprecationConfig,
-  ApiBuilderEnumValueConfig,
-  ApiBuilderEnumConfig,
-  ApiBuilderFieldConfig,
-  Kind,
-} from '../../src';
 
-export function createMockDeprecation(config: Partial<ApiBuilderDeprecationConfig> = {}): ApiBuilderDeprecationConfig {
+import { Deprecation, EnumValue, Enum, Field } from '../../src/generated/types/apibuilder-spec';
+import { Kind } from '../../src';
+
+export function createMockDeprecation(config: Partial<Deprecation> = {}): Deprecation {
   return {
     description: config.description,
   };
 }
 
-export function createMockEnumValue(config: Partial<ApiBuilderEnumValueConfig> = {}): ApiBuilderEnumValueConfig {
+export function createMockEnumValue(config: Partial<EnumValue> = {}): EnumValue {
   return {
     name: defaultTo(config.name, faker.lorem.word()),
     description: config.description,
@@ -23,7 +19,7 @@ export function createMockEnumValue(config: Partial<ApiBuilderEnumValueConfig> =
   };
 }
 
-export function createMockEnum(config: Partial<ApiBuilderEnumConfig> = {}): ApiBuilderEnumConfig {
+export function createMockEnum(config: Partial<Enum> = {}): Enum {
   return {
     name: defaultTo(config.name, faker.lorem.word()),
     plural: defaultTo(config.plural, faker.lorem.word()),
@@ -34,7 +30,7 @@ export function createMockEnum(config: Partial<ApiBuilderEnumConfig> = {}): ApiB
   };
 }
 
-export function createMockField(config: Partial<ApiBuilderFieldConfig> = {}): ApiBuilderFieldConfig {
+export function createMockField(config: Partial<Field> = {}): Field {
   return {
     name: defaultTo(config.name, faker.lorem.word()),
     type: defaultTo(config.type, Kind.STRING),

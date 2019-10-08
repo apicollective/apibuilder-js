@@ -1,27 +1,13 @@
-import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
-import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
-import { ApiBuilderOperation, ApiBuilderOperationConfig } from './ApiBuilderOperation';
+import { Resource } from '../../generated/types/apibuilder-spec';
+import { ApiBuilderOperation } from './ApiBuilderOperation';
 import { ApiBuilderService } from './ApiBuilderService';
 import { astFromTypeName, typeFromAst } from '../../language';
 
-/**
- * @see https://app.apibuilder.io/bryzek/apidoc-spec/0.11.94#model-resource
- */
-export interface ApiBuilderResourceConfig {
-  readonly type: string;
-  readonly plural: string;
-  readonly path?: string;
-  readonly description?: string;
-  readonly deprecation?: ApiBuilderDeprecationConfig;
-  readonly operations: ReadonlyArray<ApiBuilderOperationConfig>;
-  readonly attributes: ReadonlyArray<ApiBuilderAttributeConfig>;
-}
-
 export class ApiBuilderResource {
-  private config: ApiBuilderResourceConfig;
+  private config: Resource;
   private service: ApiBuilderService;
 
-  constructor(config: ApiBuilderResourceConfig, service: ApiBuilderService) {
+  constructor(config: Resource, service: ApiBuilderService) {
     this.config = config;
     this.service = service;
   }

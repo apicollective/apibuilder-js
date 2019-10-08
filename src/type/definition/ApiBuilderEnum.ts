@@ -1,26 +1,13 @@
 import invariant from 'invariant';
 import { camelCase, upperFirst } from 'lodash';
+
+import { Enum } from '../../generated/types/apibuilder-spec';
 import { FullyQualifiedName } from '../../language';
-import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
-import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
-import { ApiBuilderEnumValue, ApiBuilderEnumValueConfig } from './ApiBuilderEnumValue';
+import { ApiBuilderEnumValue } from './ApiBuilderEnumValue';
 import { ApiBuilderService } from './ApiBuilderService';
 
-export interface ApiBuilderEnumConfig {
-  readonly name: string;
-  readonly plural: string;
-  readonly description?: string;
-  readonly deprecation?: ApiBuilderDeprecationConfig;
-  readonly values: ReadonlyArray<ApiBuilderEnumValueConfig>;
-  readonly attributes: ReadonlyArray<ApiBuilderAttributeConfig>;
-}
-
-/**
- * An object representing an API builder enum definition.
- * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#model-enum
- */
 export class ApiBuilderEnum {
-  private config: ApiBuilderEnumConfig;
+  private config: Enum;
   private fullyQualifiedName: FullyQualifiedName;
   private service: ApiBuilderService;
 
@@ -28,7 +15,7 @@ export class ApiBuilderEnum {
    * Returns the ApiBuilderEnum corresponding to the specified enum definition.
    */
   public static fromConfig(
-    config: ApiBuilderEnumConfig,
+    config: Enum,
     service: ApiBuilderService,
     namespace: string = service.namespace,
   ) {
@@ -38,7 +25,7 @@ export class ApiBuilderEnum {
 
   constructor(
     fullyQualifiedName: FullyQualifiedName,
-    config: ApiBuilderEnumConfig,
+    config: Enum,
     service: ApiBuilderService,
   ) {
     invariant(

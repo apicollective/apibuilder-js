@@ -1,0 +1,8 @@
+---
+apicollective:
+  apibuilder-generator:
+    ts_declarations:
+    - src/generated/types/apibuilder-generator.ts
+  apibuilder-spec:
+    ts_declarations:
+    - src/generated/types/apibuilder-spec.ts

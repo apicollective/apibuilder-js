@@ -1,22 +1,14 @@
 import { snakeCase, toUpper } from 'lodash';
-import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
-import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
-
-export interface ApiBuilderEnumValueConfig {
-  readonly name: string;
-  readonly description?: string;
-  readonly deprecation?: ApiBuilderDeprecationConfig;
-  readonly attributes?:	ReadonlyArray<ApiBuilderAttributeConfig>;
-}
+import { EnumValue } from '../../generated/types/apibuilder-spec';
 
 /**
  * An object representing an API builder enum value definition.
  * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#model-enum_value
  */
 export class ApiBuilderEnumValue {
-  private config: ApiBuilderEnumValueConfig;
+  private config: EnumValue;
 
-  constructor(config: ApiBuilderEnumValueConfig) {
+  constructor(config: EnumValue) {
     this.config = config;
   }
 

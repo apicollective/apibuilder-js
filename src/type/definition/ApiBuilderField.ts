@@ -1,27 +1,12 @@
-import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
-import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
 import { ApiBuilderService } from './ApiBuilderService';
+import { Field } from '../../generated/types/apibuilder-spec';
 import { astFromTypeName, typeFromAst } from '../../language';
 
-export interface ApiBuilderFieldConfig {
-  readonly name: string;
-  readonly type: string;
-  readonly description?: string;
-  readonly deprecation?: ApiBuilderDeprecationConfig;
-  readonly default?: string;
-  readonly required: boolean;
-  readonly minimum?: number;
-  readonly maximum?: number;
-  readonly example?: string;
-  readonly attributes: ReadonlyArray<ApiBuilderAttributeConfig>;
-  readonly annotations?: ReadonlyArray<string>;
-}
-
 export class ApiBuilderField {
-  private config: ApiBuilderFieldConfig;
+  private config: Field;
   private service: ApiBuilderService;
 
-  constructor(config: ApiBuilderFieldConfig, service: ApiBuilderService) {
+  constructor(config: Field, service: ApiBuilderService) {
     this.config = config;
     this.service = service;
   }

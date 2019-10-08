@@ -1,38 +1,12 @@
-import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
+import { Parameter } from '../../generated/types/apibuilder-spec';
 import { ApiBuilderService } from './ApiBuilderService';
 import { astFromTypeName, typeFromAst } from '../../language';
 
-/**
- * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#enum-parameter_location
- */
-export enum ApiBuilderParameterLocation {
-  Path = 'Path',
-  Query = 'Query',
-  Form = 'Form',
-  Header = 'Header',
-}
-
-/**
- * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#model-parameter
- */
-export interface ApiBuilderParameterConfig {
-  readonly name: string;
-  readonly type: string;
-  readonly location: ApiBuilderParameterLocation | keyof typeof ApiBuilderParameterLocation;
-  readonly description?: string;
-  readonly deprecation?: ApiBuilderDeprecationConfig;
-  readonly required: boolean;
-  readonly default?: string;
-  readonly minimum?: number;
-  readonly maximum?: number;
-  readonly example?: string;
-}
-
 export class ApiBuilderParameter {
-  private config: ApiBuilderParameterConfig;
+  private config: Parameter;
   private service: ApiBuilderService;
 
-  constructor(config: ApiBuilderParameterConfig, service: ApiBuilderService) {
+  constructor(config: Parameter, service: ApiBuilderService) {
     this.config = config;
     this.service = service;
   }

@@ -1,24 +1,13 @@
 import { map } from 'lodash';
 import invariant from 'invariant';
 
-import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
-import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
 import { ApiBuilderService } from './ApiBuilderService';
-import { ApiBuilderUnionType, ApiBuilderUnionTypeConfig } from './ApiBuilderUnionType';
+import { ApiBuilderUnionType } from './ApiBuilderUnionType';
 import { FullyQualifiedName } from '../../language';
-
-export interface ApiBuilderUnionConfig {
-  readonly name: string;
-  readonly plural: string;
-  readonly discriminator?: string;
-  readonly description?: string;
-  readonly deprecation?: ApiBuilderDeprecationConfig;
-  readonly types: ReadonlyArray<ApiBuilderUnionTypeConfig>;
-  readonly attributes: ReadonlyArray<ApiBuilderAttributeConfig>;
-}
+import { Union } from '../../generated/types/apibuilder-spec';
 
 export class ApiBuilderUnion {
-  private config: ApiBuilderUnionConfig;
+  private config: Union;
   private fullyQualifiedName: FullyQualifiedName;
   private service: ApiBuilderService;
 
@@ -27,7 +16,7 @@ export class ApiBuilderUnion {
    * union definition.
    */
   public static fromConfig(
-    config: ApiBuilderUnionConfig,
+    config: Union,
     service: ApiBuilderService,
     namespace = service.namespace,
   ) {
@@ -37,7 +26,7 @@ export class ApiBuilderUnion {
 
   constructor(
     fullyQualifiedName: FullyQualifiedName,
-    config: ApiBuilderUnionConfig,
+    config: Union,
     service: ApiBuilderService,
   ) {
     invariant(

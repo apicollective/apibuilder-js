@@ -1,81 +1,19 @@
 import { flatMap, matchesProperty, overSome } from 'lodash';
-import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
-import { ApiBuilderEnum, ApiBuilderEnumConfig } from './ApiBuilderEnum';
-import { ApiBuilderHeaderConfig } from './ApiBuilderHeader';
-import { ApiBuilderImport, ApiBuilderImportConfig } from './ApiBuilderImport';
-import { ApiBuilderModel, ApiBuilderModelConfig } from './ApiBuilderModel';
-import { ApiBuilderResource, ApiBuilderResourceConfig } from './ApiBuilderResource';
-import { ApiBuilderUnion, ApiBuilderUnionConfig } from './ApiBuilderUnion';
-import { ApiBuilderAnnotationConfig } from './ApiBuilderAnnotation';
-
-export interface ApiBuilderApiDocConfig {
-  readonly version: string;
-}
-
-export interface ApiBuilderOrganizationConfig {
-  readonly key: string;
-}
-
-export interface ApiBuilderApplicationConfig {
-  readonly key: string;
-}
-
-/**
- * Describes the primary contact for this service
- * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#model-contact
- */
-export interface ApiBuilderContactConfig {
-  readonly name?: string;
-  readonly url?: string;
-  readonly email?: string;
-}
-
-/**
- * Describes the software license contact for this service
- * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#model-license
- */
-export interface ApiBuilderLicenseConfig {
-  readonly name: string;
-  readonly url?: string;
-}
-
-/**
- * General metadata about this service
- * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#model-info
- */
-export interface ApiBuilderInfoConfig {
-  readonly license?: ApiBuilderLicenseConfig;
-  readonly contact?: ApiBuilderContactConfig;
-}
-
-export interface ApiBuilderServiceConfig {
-  readonly apidoc: ApiBuilderApiDocConfig;
-  readonly name: string;
-  readonly organization: ApiBuilderOrganizationConfig;
-  readonly application: ApiBuilderApplicationConfig;
-  readonly namespace: string;
-  readonly version: string;
-  readonly base_url?: string;
-  readonly description?: string;
-  readonly info: ApiBuilderInfoConfig;
-  readonly headers: ReadonlyArray<ApiBuilderHeaderConfig>;
-  readonly imports: ReadonlyArray<ApiBuilderImportConfig>;
-  readonly enums: ReadonlyArray<ApiBuilderEnumConfig>;
-  readonly unions: ReadonlyArray<ApiBuilderUnionConfig>;
-  readonly models: ReadonlyArray<ApiBuilderModelConfig>;
-  readonly resources: ReadonlyArray<ApiBuilderResourceConfig>;
-  readonly attributes: ReadonlyArray<ApiBuilderAttributeConfig>;
-  readonly annotations: ReadonlyArray<ApiBuilderAnnotationConfig>;
-}
+import { ApiBuilderEnum } from './ApiBuilderEnum';
+import { ApiBuilderImport } from './ApiBuilderImport';
+import { ApiBuilderModel } from './ApiBuilderModel';
+import { ApiBuilderResource } from './ApiBuilderResource';
+import { ApiBuilderUnion } from './ApiBuilderUnion';
+import { Service } from '../../generated/types/apibuilder-spec';
 
 /**
  * Wraps an apibuilder service definition and provides utilities for
  * interacting with it.
  */
 export class ApiBuilderService {
-  private config: ApiBuilderServiceConfig;
+  private config: Service;
 
-  constructor(config: ApiBuilderServiceConfig) {
+  constructor(config: Service) {
     this.config = config;
   }
 

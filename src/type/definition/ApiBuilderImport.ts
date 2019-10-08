@@ -1,9 +1,10 @@
 import pluralize from 'pluralize';
 import { find, matchesProperty, overSome } from 'lodash';
-import { ApiBuilderEnum, ApiBuilderEnumConfig } from './ApiBuilderEnum';
-import { ApiBuilderModel, ApiBuilderModelConfig } from './ApiBuilderModel';
-import { ApiBuilderUnion, ApiBuilderUnionConfig } from './ApiBuilderUnion';
-import { ApiBuilderService, ApiBuilderApplicationConfig, ApiBuilderOrganizationConfig } from './ApiBuilderService';
+import { ApiBuilderEnum } from './ApiBuilderEnum';
+import { ApiBuilderModel } from './ApiBuilderModel';
+import { ApiBuilderUnion } from './ApiBuilderUnion';
+import { ApiBuilderService } from './ApiBuilderService';
+import { Enum, Import, Model, Union } from '../../generated/types/apibuilder-spec';
 
 function findTypeByName<T>(types: T[], name: string): T | undefined {
   return find(types, overSome([
@@ -12,22 +13,11 @@ function findTypeByName<T>(types: T[], name: string): T | undefined {
   ]));
 }
 
-export interface ApiBuilderImportConfig {
-  readonly uri: string;
-  readonly namespace: string;
-  readonly organization: ApiBuilderOrganizationConfig;
-  readonly application: ApiBuilderApplicationConfig;
-  readonly version: string;
-  readonly enums: string[];
-  readonly unions: string[];
-  readonly models: string[];
-}
-
 export class ApiBuilderImport {
-  private config: ApiBuilderImportConfig;
+  private config: Import;
   private service: ApiBuilderService;
 
-  constructor(config: ApiBuilderImportConfig, service: ApiBuilderService) {
+  constructor(config: Import, service: ApiBuilderService) {
     this.config = config;
     this.service = service;
   }
@@ -50,7 +40,7 @@ export class ApiBuilderImport {
 
   get enums() {
     const enums = this.config.enums.map((enumeration) => {
-      const config: ApiBuilderEnumConfig = {
+      const config: Enum = {
         name: enumeration,
         plural: pluralize(enumeration),
         values: [],
@@ -64,7 +54,7 @@ export class ApiBuilderImport {
 
   get models() {
     const models = this.config.models.map((model) => {
-      const config: ApiBuilderModelConfig = {
+      const config: Model = {
         name: model,
         plural: pluralize(model),
         fields: [],
@@ -78,7 +68,7 @@ export class ApiBuilderImport {
 
   get unions() {
     const unions = this.config.unions.map((union) => {
-      const config: ApiBuilderUnionConfig = {
+      const config: Union = {
         name: union,
         plural: pluralize(union),
         types: [],

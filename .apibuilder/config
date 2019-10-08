@@ -1,0 +1,13 @@
+settings:
+  code.create.directories: false
+  code.cleanup.generated.files: true
+code:
+  apicollective:
+    apibuilder-generator:
+      version: latest
+      generators:
+        ts_declarations: src/generated/types
+    apibuilder-spec:
+      version: latest
+      generators:
+        ts_declarations: src/generated/types
