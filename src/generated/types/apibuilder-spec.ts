@@ -1,25 +1,25 @@
-declare namespace io.apibuilder.spec.v0.enums {
-  type Method = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'CONNECT' | 'OPTIONS' | 'TRACE';
-  type ParameterLocation = 'Path' | 'Query' | 'Form' | 'Header';
-  type ResponseCodeOption = 'Default';
+namespace io.apibuilder.spec.v0.enums {
+  export type Method = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'CONNECT' | 'OPTIONS' | 'TRACE';
+  export type ParameterLocation = 'Path' | 'Query' | 'Form' | 'Header';
+  export type ResponseCodeOption = 'Default';
 }
 
-declare namespace io.apibuilder.spec.v0.models {
-  interface Annotation {
+namespace io.apibuilder.spec.v0.models {
+  export interface Annotation {
     readonly 'name': string;
     readonly 'description'?: string;
     readonly 'deprecation'?: io.apibuilder.spec.v0.models.Deprecation;
   }
 
-  interface Apidoc {
+  export interface Apidoc {
     readonly 'version': string;
   }
 
-  interface Application {
+  export interface Application {
     readonly 'key': string;
   }
 
-  interface Attribute {
+  export interface Attribute {
     readonly 'name': string;
     readonly 'value': {
       [key: string]: string;
@@ -28,24 +28,24 @@ declare namespace io.apibuilder.spec.v0.models {
     readonly 'deprecation'?: io.apibuilder.spec.v0.models.Deprecation;
   }
 
-  interface Body {
+  export interface Body {
     readonly 'type': string;
     readonly 'description'?: string;
     readonly 'deprecation'?: io.apibuilder.spec.v0.models.Deprecation;
     readonly 'attributes': io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  interface Contact {
+  export interface Contact {
     readonly 'name'?: string;
     readonly 'url'?: string;
     readonly 'email'?: string;
   }
 
-  interface Deprecation {
+  export interface Deprecation {
     readonly 'description'?: string;
   }
 
-  interface Enum {
+  export interface Enum {
     readonly 'name': string;
     readonly 'plural': string;
     readonly 'description'?: string;
@@ -54,7 +54,7 @@ declare namespace io.apibuilder.spec.v0.models {
     readonly 'attributes': io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  interface EnumValue {
+  export interface EnumValue {
     readonly 'name': string;
     readonly 'description'?: string;
     readonly 'deprecation'?: io.apibuilder.spec.v0.models.Deprecation;
@@ -62,7 +62,7 @@ declare namespace io.apibuilder.spec.v0.models {
     readonly 'value'?: string;
   }
 
-  interface Field {
+  export interface Field {
     readonly 'name': string;
     readonly 'type': string;
     readonly 'description'?: string;
@@ -76,7 +76,7 @@ declare namespace io.apibuilder.spec.v0.models {
     readonly 'annotations'?: string[];
   }
 
-  interface Header {
+  export interface Header {
     readonly 'name': string;
     readonly 'type': string;
     readonly 'description'?: string;
@@ -86,7 +86,7 @@ declare namespace io.apibuilder.spec.v0.models {
     readonly 'attributes': io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  interface Import {
+  export interface Import {
     readonly 'uri': string;
     readonly 'namespace': string;
     readonly 'organization': io.apibuilder.spec.v0.models.Organization;
@@ -98,17 +98,17 @@ declare namespace io.apibuilder.spec.v0.models {
     readonly 'annotations'?: io.apibuilder.spec.v0.models.Annotation[];
   }
 
-  interface Info {
+  export interface Info {
     readonly 'license'?: io.apibuilder.spec.v0.models.License;
     readonly 'contact'?: io.apibuilder.spec.v0.models.Contact;
   }
 
-  interface License {
+  export interface License {
     readonly 'name': string;
     readonly 'url'?: string;
   }
 
-  interface Model {
+  export interface Model {
     readonly 'name': string;
     readonly 'plural': string;
     readonly 'description'?: string;
@@ -117,7 +117,7 @@ declare namespace io.apibuilder.spec.v0.models {
     readonly 'attributes': io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  interface Operation {
+  export interface Operation {
     readonly 'method': io.apibuilder.spec.v0.enums.Method;
     readonly 'path': string;
     readonly 'description'?: string;
@@ -128,11 +128,11 @@ declare namespace io.apibuilder.spec.v0.models {
     readonly 'attributes': io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  interface Organization {
+  export interface Organization {
     readonly 'key': string;
   }
 
-  interface Parameter {
+  export interface Parameter {
     readonly 'name': string;
     readonly 'type': string;
     readonly 'location': io.apibuilder.spec.v0.enums.ParameterLocation;
@@ -146,7 +146,7 @@ declare namespace io.apibuilder.spec.v0.models {
     readonly 'attributes'?: io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  interface Resource {
+  export interface Resource {
     readonly 'type': string;
     readonly 'plural': string;
     readonly 'path'?: string;
@@ -156,7 +156,7 @@ declare namespace io.apibuilder.spec.v0.models {
     readonly 'attributes': io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  interface Response {
+  export interface Response {
     readonly 'code': io.apibuilder.spec.v0.unions.ResponseCode;
     readonly 'type': string;
     readonly 'headers'?: io.apibuilder.spec.v0.models.Header[];
@@ -165,7 +165,7 @@ declare namespace io.apibuilder.spec.v0.models {
     readonly 'attributes'?: io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  interface Service {
+  export interface Service {
     readonly 'apidoc': io.apibuilder.spec.v0.models.Apidoc;
     readonly 'name': string;
     readonly 'organization': io.apibuilder.spec.v0.models.Organization;
@@ -185,7 +185,7 @@ declare namespace io.apibuilder.spec.v0.models {
     readonly 'annotations'?: io.apibuilder.spec.v0.models.Annotation[];
   }
 
-  interface Union {
+  export interface Union {
     readonly 'name': string;
     readonly 'plural': string;
     readonly 'discriminator'?: string;
@@ -195,7 +195,7 @@ declare namespace io.apibuilder.spec.v0.models {
     readonly 'attributes': io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  interface UnionType {
+  export interface UnionType {
     readonly 'type': string;
     readonly 'description'?: string;
     readonly 'deprecation'?: io.apibuilder.spec.v0.models.Deprecation;
@@ -205,8 +205,8 @@ declare namespace io.apibuilder.spec.v0.models {
   }
 }
 
-declare namespace io.apibuilder.spec.v0.unions {
-  type ResponseCode = ({
+namespace io.apibuilder.spec.v0.unions {
+  export type ResponseCode = ({
     discriminator: 'integer';
     value: number;
   } | {
