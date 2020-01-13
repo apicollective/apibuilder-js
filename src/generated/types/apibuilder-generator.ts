@@ -1,73 +1,73 @@
-namespace io.apibuilder.common.v0.models {
-  export interface Audit {
+declare namespace io.apibuilder.common.v0.models {
+  interface Audit {
     readonly 'created_at': string;
     readonly 'created_by': io.apibuilder.common.v0.models.ReferenceGuid;
     readonly 'updated_at': string;
     readonly 'updated_by': io.apibuilder.common.v0.models.ReferenceGuid;
   }
 
-  export interface Healthcheck {
+  interface Healthcheck {
     readonly 'status': string;
   }
 
-  export interface Reference {
+  interface Reference {
     readonly 'guid': string;
     readonly 'key': string;
   }
 
-  export interface ReferenceGuid {
+  interface ReferenceGuid {
     readonly 'guid': string;
   }
 }
 
-namespace io.apibuilder.spec.v0.enums {
-  export type Method = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'CONNECT' | 'OPTIONS' | 'TRACE';
-  export type ParameterLocation = 'Path' | 'Query' | 'Form' | 'Header';
-  export type ResponseCodeOption = 'Default';
+declare namespace io.apibuilder.spec.v0.enums {
+  type Method = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'CONNECT' | 'OPTIONS' | 'TRACE';
+  type ParameterLocation = 'Path' | 'Query' | 'Form' | 'Header';
+  type ResponseCodeOption = 'Default';
 }
 
-namespace io.apibuilder.spec.v0.models {
-  export interface Annotation {
+declare namespace io.apibuilder.spec.v0.models {
+  interface Annotation {
     readonly 'name': string;
     readonly 'description'?: string;
     readonly 'deprecation'?: io.apibuilder.spec.v0.models.Deprecation;
   }
 
-  export interface Apidoc {
+  interface Apidoc {
     readonly 'version': string;
   }
 
-  export interface Application {
+  interface Application {
     readonly 'key': string;
   }
 
-  export interface Attribute {
+  interface Attribute {
     readonly 'name': string;
     readonly 'value': {
-      [key: string]: string;
+      [key: string]: string
     };
     readonly 'description'?: string;
     readonly 'deprecation'?: io.apibuilder.spec.v0.models.Deprecation;
   }
 
-  export interface Body {
+  interface Body {
     readonly 'type': string;
     readonly 'description'?: string;
     readonly 'deprecation'?: io.apibuilder.spec.v0.models.Deprecation;
     readonly 'attributes': io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  export interface Contact {
+  interface Contact {
     readonly 'name'?: string;
     readonly 'url'?: string;
     readonly 'email'?: string;
   }
 
-  export interface Deprecation {
+  interface Deprecation {
     readonly 'description'?: string;
   }
 
-  export interface Enum {
+  interface Enum {
     readonly 'name': string;
     readonly 'plural': string;
     readonly 'description'?: string;
@@ -76,7 +76,7 @@ namespace io.apibuilder.spec.v0.models {
     readonly 'attributes': io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  export interface EnumValue {
+  interface EnumValue {
     readonly 'name': string;
     readonly 'description'?: string;
     readonly 'deprecation'?: io.apibuilder.spec.v0.models.Deprecation;
@@ -84,7 +84,7 @@ namespace io.apibuilder.spec.v0.models {
     readonly 'value'?: string;
   }
 
-  export interface Field {
+  interface Field {
     readonly 'name': string;
     readonly 'type': string;
     readonly 'description'?: string;
@@ -98,7 +98,7 @@ namespace io.apibuilder.spec.v0.models {
     readonly 'annotations'?: string[];
   }
 
-  export interface Header {
+  interface Header {
     readonly 'name': string;
     readonly 'type': string;
     readonly 'description'?: string;
@@ -108,7 +108,7 @@ namespace io.apibuilder.spec.v0.models {
     readonly 'attributes': io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  export interface Import {
+  interface Import {
     readonly 'uri': string;
     readonly 'namespace': string;
     readonly 'organization': io.apibuilder.spec.v0.models.Organization;
@@ -120,17 +120,17 @@ namespace io.apibuilder.spec.v0.models {
     readonly 'annotations'?: io.apibuilder.spec.v0.models.Annotation[];
   }
 
-  export interface Info {
+  interface Info {
     readonly 'license'?: io.apibuilder.spec.v0.models.License;
     readonly 'contact'?: io.apibuilder.spec.v0.models.Contact;
   }
 
-  export interface License {
+  interface License {
     readonly 'name': string;
     readonly 'url'?: string;
   }
 
-  export interface Model {
+  interface Model {
     readonly 'name': string;
     readonly 'plural': string;
     readonly 'description'?: string;
@@ -139,7 +139,7 @@ namespace io.apibuilder.spec.v0.models {
     readonly 'attributes': io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  export interface Operation {
+  interface Operation {
     readonly 'method': io.apibuilder.spec.v0.enums.Method;
     readonly 'path': string;
     readonly 'description'?: string;
@@ -150,11 +150,11 @@ namespace io.apibuilder.spec.v0.models {
     readonly 'attributes': io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  export interface Organization {
+  interface Organization {
     readonly 'key': string;
   }
 
-  export interface Parameter {
+  interface Parameter {
     readonly 'name': string;
     readonly 'type': string;
     readonly 'location': io.apibuilder.spec.v0.enums.ParameterLocation;
@@ -168,7 +168,7 @@ namespace io.apibuilder.spec.v0.models {
     readonly 'attributes'?: io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  export interface Resource {
+  interface Resource {
     readonly 'type': string;
     readonly 'plural': string;
     readonly 'path'?: string;
@@ -178,7 +178,7 @@ namespace io.apibuilder.spec.v0.models {
     readonly 'attributes': io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  export interface Response {
+  interface Response {
     readonly 'code': io.apibuilder.spec.v0.unions.ResponseCode;
     readonly 'type': string;
     readonly 'headers'?: io.apibuilder.spec.v0.models.Header[];
@@ -187,7 +187,7 @@ namespace io.apibuilder.spec.v0.models {
     readonly 'attributes'?: io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  export interface Service {
+  interface Service {
     readonly 'apidoc': io.apibuilder.spec.v0.models.Apidoc;
     readonly 'name': string;
     readonly 'organization': io.apibuilder.spec.v0.models.Organization;
@@ -207,7 +207,7 @@ namespace io.apibuilder.spec.v0.models {
     readonly 'annotations'?: io.apibuilder.spec.v0.models.Annotation[];
   }
 
-  export interface Union {
+  interface Union {
     readonly 'name': string;
     readonly 'plural': string;
     readonly 'discriminator'?: string;
@@ -217,7 +217,7 @@ namespace io.apibuilder.spec.v0.models {
     readonly 'attributes': io.apibuilder.spec.v0.models.Attribute[];
   }
 
-  export interface UnionType {
+  interface UnionType {
     readonly 'type': string;
     readonly 'description'?: string;
     readonly 'deprecation'?: io.apibuilder.spec.v0.models.Deprecation;
@@ -227,39 +227,39 @@ namespace io.apibuilder.spec.v0.models {
   }
 }
 
-namespace io.apibuilder.spec.v0.unions {
-  export type ResponseCode = ({
-    discriminator: 'integer';
-    value: number;
+declare namespace io.apibuilder.spec.v0.unions {
+  type ResponseCode = ({
+    discriminator: 'integer',
+    value: number
   } | {
-    discriminator: 'response_code_option';
-    value: io.apibuilder.spec.v0.enums.ResponseCodeOption;
+    discriminator: 'response_code_option',
+    value: io.apibuilder.spec.v0.enums.ResponseCodeOption
   });
 }
 
-namespace io.apibuilder.generator.v0.enums {
-  export type FileFlag = 'scaffolding';
+declare namespace io.apibuilder.generator.v0.enums {
+  type FileFlag = 'scaffolding';
 }
 
-namespace io.apibuilder.generator.v0.models {
-  export interface Attribute {
+declare namespace io.apibuilder.generator.v0.models {
+  interface Attribute {
     readonly 'name': string;
     readonly 'value': string;
   }
 
-  export interface Error {
+  interface Error {
     readonly 'code': string;
     readonly 'message': string;
   }
 
-  export interface File {
+  interface File {
     readonly 'name': string;
     readonly 'dir'?: string;
     readonly 'contents': string;
     readonly 'flags'?: io.apibuilder.generator.v0.enums.FileFlag[];
   }
 
-  export interface Generator {
+  interface Generator {
     readonly 'key': string;
     readonly 'name': string;
     readonly 'language'?: string;
@@ -267,16 +267,16 @@ namespace io.apibuilder.generator.v0.models {
     readonly 'attributes': string[];
   }
 
-  export interface Healthcheck {
+  interface Healthcheck {
     readonly 'status': string;
   }
 
-  export interface Invocation {
+  interface Invocation {
     readonly 'source': string;
     readonly 'files': io.apibuilder.generator.v0.models.File[];
   }
 
-  export interface InvocationForm {
+  interface InvocationForm {
     readonly 'service': io.apibuilder.spec.v0.models.Service;
     readonly 'attributes': io.apibuilder.generator.v0.models.Attribute[];
     readonly 'user_agent'?: string;
