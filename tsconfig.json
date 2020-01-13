@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "declaration": true,
     "esModuleInterop": true,
-    "lib": ["es2016", "dom"],
-    "module": "commonjs",
+    "noImplicitAny": true,
     "moduleResolution": "node",
     "outDir": "dist",
     "resolveJsonModule": true,
@@ -15,6 +15,7 @@
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "src/generated"
   ]
 }
