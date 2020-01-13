@@ -1,5 +1,6 @@
 import {
   camelCase,
+  capitalize,
   find,
   flatMap,
   map,
@@ -15,6 +16,10 @@ import pluralize from 'pluralize';
 import * as ApiBuilderSpec from '../generated/types/apibuilder-spec';
 import * as ApiBuilderGenerator from '../generated/types/apibuilder-generator';
 import { FullyQualifiedName, astFromTypeName, typeFromAst } from '../language';
+
+function pascalCase(value: string): string {
+  return capitalize(camelCase(value));
+}
 
 function findTypeByName<T>(types: T[], name: string): T | undefined {
   return find(types, overSome([
@@ -543,8 +548,34 @@ export class ApiBuilderOperation {
    * A string used to identify this operation. Useful for naming the method
    * corresponding to this operation in code generators.
    */
-  get nickname(): never {
-    throw new Error('Not Implemented');
+  get nickname(): string {
+    let path = this.config.path;
+
+    if (this.resource.path != null) {
+      path = path.replace(this.resource.path, '');
+    }
+
+    if (path.startsWith('/')) {
+      path = path.slice(1);
+    }
+
+    const parts = path.split('/');
+
+    const dynamicParts = parts
+      .filter(part => part.startsWith(':'))
+      .map((part, index) => {
+        const prefix = index === 0 ? 'By' : 'And';
+        return prefix + pascalCase(part);
+      });
+
+    const staticParts = parts
+      .filter(part => !part.startsWith(':'))
+      .map((part, index) => {
+        const prefix = index === 0 ? '' : 'And';
+        return prefix + pascalCase(part);
+      });
+
+    return this.method.toLowerCase() + staticParts.concat(dynamicParts).join('');
   }
 
   get url(): string {
