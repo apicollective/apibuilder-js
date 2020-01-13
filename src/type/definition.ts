@@ -716,6 +716,26 @@ export class ApiBuilderResource {
   }
 }
 
+type NonDiscriminatedResponseCodeInteger = {
+  integer: {
+    value: number;
+  };
+};
+
+type NonDiscriminatedResponseCodeOption = {
+  response_code_option: {
+    value: ApiBuilderSpec.ResponseCodeOption;
+  };
+};
+
+function isNonDiscriminatedResponseCodeInteger(code: any): code is NonDiscriminatedResponseCodeInteger {
+  return code.discriminator == null && code.integer != null;
+}
+
+function isNonDiscriminatedResponseCodeOption(code: any): code is NonDiscriminatedResponseCodeOption {
+  return code.discriminator == null && code.response_code_option != null;
+}
+
 export class ApiBuilderResponse {
   private config: ApiBuilderSpec.Response;
   private service: ApiBuilderService;
@@ -726,11 +746,14 @@ export class ApiBuilderResponse {
   }
 
   get code(): number | undefined {
-    switch (this.config.code.discriminator) {
-      case 'integer':
-        return this.config.code.value;
-      default:
-        return undefined;
+    const code = this.config.code;
+
+    if (code.discriminator === 'integer') {
+      return code.value;
+    }
+
+    if (isNonDiscriminatedResponseCodeInteger(code)) {
+      return code.integer.value;
     }
   }
 
@@ -739,12 +762,17 @@ export class ApiBuilderResponse {
    * not covered individually by the specification.
    */
   get isDefault(): boolean {
-    switch (this.config.code.discriminator) {
-      case 'integer':
-        return false;
-      default:
-        return this.config.code.value === 'Default';
+    const code = this.config.code;
+
+    if (code.discriminator === 'response_code_option') {
+      return code.value === 'Default';
     }
+
+    if (isNonDiscriminatedResponseCodeOption(code)) {
+      return code.response_code_option.value === 'Default';
+    }
+
+    return false;
   }
 
   get type(): ApiBuilderType {
