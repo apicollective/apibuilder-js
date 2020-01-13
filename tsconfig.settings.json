@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "strict": true,
+    "target": "es5"
+  }
+}

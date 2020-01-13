@@ -1,21 +1,5 @@
 {
-  "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "esModuleInterop": true,
-    "noImplicitAny": true,
-    "moduleResolution": "node",
-    "outDir": "dist",
-    "resolveJsonModule": true,
-    "strict": true,
-    "target": "es5"
-  },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "src/generated"
-  ]
+  "extends": "./tsconfig.settings.json",
+  "include": ["**/*.ts"],
+  "exclude": ["dist", "node_modules"]
 }
