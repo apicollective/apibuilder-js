@@ -44,7 +44,7 @@ declare namespace io.apibuilder.spec.v0.models {
   interface Attribute {
     readonly 'name': string;
     readonly 'value': {
-      [key: string]: string
+      [key: string]: string;
     };
     readonly 'description'?: string;
     readonly 'deprecation'?: io.apibuilder.spec.v0.models.Deprecation;
@@ -229,11 +229,11 @@ declare namespace io.apibuilder.spec.v0.models {
 
 declare namespace io.apibuilder.spec.v0.unions {
   type ResponseCode = ({
-    discriminator: 'integer',
-    value: number
+    discriminator: 'integer';
+    value: number;
   } | {
-    discriminator: 'response_code_option',
-    value: io.apibuilder.spec.v0.enums.ResponseCodeOption
+    discriminator: 'response_code_option';
+    value: io.apibuilder.spec.v0.enums.ResponseCodeOption;
   });
 }
 
