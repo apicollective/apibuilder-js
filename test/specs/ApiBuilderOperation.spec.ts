@@ -7,10 +7,10 @@ describe('ApiBuilderOperation', () => {
       const service = new ApiBuilderService(apidocApi);
       const resource = service.resources
         .find(resource => resource.typeName === 'application');
-      const operation = resource.operations
+      const operation = resource?.operations
         .find(operation => operation.path === '/:orgKey' && operation.method === 'GET');
-      const type = operation.getResponseTypeByCode(200);
-      expect(type.toString()).toEqual('[com.bryzek.apidoc.api.v0.models.application]');
+      const type = operation?.getResponseTypeByCode(200);
+      expect(type?.toString()).toEqual('[com.bryzek.apidoc.api.v0.models.application]');
     });
   });
 });
