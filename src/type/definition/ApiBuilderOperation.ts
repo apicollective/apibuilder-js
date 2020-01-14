@@ -47,9 +47,7 @@ export class ApiBuilderOperation {
   }
 
   get body() {
-    if (this.config.body) {
-      return this.config.body;
-    }
+    return this.config.body;
   }
 
   get method() {
@@ -61,9 +59,11 @@ export class ApiBuilderOperation {
   }
 
   get deprecationReason() {
-    if (this.config.deprecation) {
+    if (this.config.deprecation != null) {
       return this.config.deprecation.description;
     }
+
+    return undefined;
   }
 
   get description() {
@@ -115,6 +115,8 @@ export class ApiBuilderOperation {
     if (useDefault) {
       return this.responses.find(response => response.isDefault);
     }
+
+    return undefined;
   }
 
   /**

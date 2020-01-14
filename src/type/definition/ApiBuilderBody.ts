@@ -30,9 +30,7 @@ export class ApiBuilderBody {
   }
 
   get description() {
-    if (this.config.description) {
-      return this.config.description;
-    }
+    return this.config.description;
   }
 
   get isDeprecated() {

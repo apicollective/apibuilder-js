@@ -67,6 +67,8 @@ export class ApiBuilderResponse {
     if (this.config.code.discriminator === 'integer') {
       return this.config.code.value;
     }
+
+    return undefined;
   }
 
   /**
@@ -106,6 +108,8 @@ export class ApiBuilderResponse {
     if (this.config.deprecation != null) {
       return this.config.deprecation.description;
     }
+
+    return undefined;
   }
 
   get attributes() {

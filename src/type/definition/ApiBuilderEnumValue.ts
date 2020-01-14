@@ -63,9 +63,11 @@ export class ApiBuilderEnumValue {
    * enum value is deprecated.
    */
   get deprecationReason() {
-    if (this.config.deprecation) {
+    if (this.config.deprecation != null) {
       return this.config.deprecation.description;
     }
+
+    return undefined;
   }
 
   public toString() {
