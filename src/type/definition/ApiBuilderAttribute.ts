@@ -12,7 +12,7 @@ import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
  */
 export interface ApiBuilderAttributeConfig {
   readonly name: string;
-  readonly value: object;
+  readonly value: Record<string, string>;
   readonly description?: string;
   readonly deprecation?: ApiBuilderDeprecationConfig;
 }

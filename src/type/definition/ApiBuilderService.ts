@@ -4,49 +4,13 @@ import { ApiBuilderEnum, ApiBuilderEnumConfig } from './ApiBuilderEnum';
 import { ApiBuilderHeaderConfig } from './ApiBuilderHeader';
 import { ApiBuilderImport, ApiBuilderImportConfig } from './ApiBuilderImport';
 import { ApiBuilderModel, ApiBuilderModelConfig } from './ApiBuilderModel';
+import { ApiBuilderOrganizationConfig } from './ApiBuilderOrganization';
 import { ApiBuilderResource, ApiBuilderResourceConfig } from './ApiBuilderResource';
 import { ApiBuilderUnion, ApiBuilderUnionConfig } from './ApiBuilderUnion';
 import { ApiBuilderAnnotationConfig } from './ApiBuilderAnnotation';
-
-export interface ApiBuilderApiDocConfig {
-  readonly version: string;
-}
-
-export interface ApiBuilderOrganizationConfig {
-  readonly key: string;
-}
-
-export interface ApiBuilderApplicationConfig {
-  readonly key: string;
-}
-
-/**
- * Describes the primary contact for this service
- * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#model-contact
- */
-export interface ApiBuilderContactConfig {
-  readonly name?: string;
-  readonly url?: string;
-  readonly email?: string;
-}
-
-/**
- * Describes the software license contact for this service
- * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#model-license
- */
-export interface ApiBuilderLicenseConfig {
-  readonly name: string;
-  readonly url?: string;
-}
-
-/**
- * General metadata about this service
- * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#model-info
- */
-export interface ApiBuilderInfoConfig {
-  readonly license?: ApiBuilderLicenseConfig;
-  readonly contact?: ApiBuilderContactConfig;
-}
+import { ApiBuilderApplicationConfig } from './ApiBuilderApplication';
+import { ApiBuilderInfoConfig } from './ApiBuilderInfo';
+import { ApiBuilderApiDocConfig } from './ApiBuilderApiDoc';
 
 export interface ApiBuilderServiceConfig {
   readonly apidoc: ApiBuilderApiDocConfig;

@@ -3,7 +3,10 @@ import { find, matchesProperty, overSome } from 'lodash';
 import { ApiBuilderEnum, ApiBuilderEnumConfig } from './ApiBuilderEnum';
 import { ApiBuilderModel, ApiBuilderModelConfig } from './ApiBuilderModel';
 import { ApiBuilderUnion, ApiBuilderUnionConfig } from './ApiBuilderUnion';
-import { ApiBuilderService, ApiBuilderApplicationConfig, ApiBuilderOrganizationConfig } from './ApiBuilderService';
+import { ApiBuilderApplicationConfig } from './ApiBuilderApplication';
+import { ApiBuilderService } from './ApiBuilderService';
+import { ApiBuilderOrganizationConfig } from './ApiBuilderOrganization';
+import { ApiBuilderAnnotationConfig } from './ApiBuilderAnnotation';
 
 function findTypeByName<T>(types: T[], name: string): T | undefined {
   return find(types, overSome([
@@ -21,6 +24,7 @@ export interface ApiBuilderImportConfig {
   readonly enums: string[];
   readonly unions: string[];
   readonly models: string[];
+  readonly annotations?: ApiBuilderAnnotationConfig[];
 }
 
 export class ApiBuilderImport {
@@ -30,6 +34,10 @@ export class ApiBuilderImport {
   constructor(config: ApiBuilderImportConfig, service: ApiBuilderService) {
     this.config = config;
     this.service = service;
+  }
+
+  get annotations() {
+    return this.config.annotations;
   }
 
   get namespace() {

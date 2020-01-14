@@ -7,6 +7,7 @@ export interface ApiBuilderEnumValueConfig {
   readonly description?: string;
   readonly deprecation?: ApiBuilderDeprecationConfig;
   readonly attributes?:	ReadonlyArray<ApiBuilderAttributeConfig>;
+  readonly value?: string;
 }
 
 /**

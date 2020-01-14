@@ -1,10 +1,15 @@
 import { ApiBuilderServiceConfig, ApiBuilderService } from './ApiBuilderService';
 
+interface ApiBuilderGeneratorAttributes {
+  readonly name: string;
+  readonly value: string;
+}
+
 export interface ApiBuilderInvocationFormConfig {
-  attributes: ({ name: string, value: string })[];
   service: ApiBuilderServiceConfig;
-  imported_services?: ApiBuilderServiceConfig[];
+  attributes: ApiBuilderGeneratorAttributes[];
   user_agent?: string;
+  imported_services?: ApiBuilderServiceConfig[];
 }
 
 export class ApiBuilderInvocationForm {

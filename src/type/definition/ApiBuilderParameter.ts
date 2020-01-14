@@ -1,16 +1,12 @@
 import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
 import { ApiBuilderService } from './ApiBuilderService';
 import { astFromTypeName, typeFromAst } from '../../language';
+import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
 
 /**
  * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#enum-parameter_location
  */
-export enum ApiBuilderParameterLocation {
-  Path = 'Path',
-  Query = 'Query',
-  Form = 'Form',
-  Header = 'Header',
-}
+export type ApiBuilderParameterLocation = 'Path' | 'Query' | 'Form' | 'Header';
 
 /**
  * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#model-parameter
@@ -18,7 +14,7 @@ export enum ApiBuilderParameterLocation {
 export interface ApiBuilderParameterConfig {
   readonly name: string;
   readonly type: string;
-  readonly location: ApiBuilderParameterLocation | keyof typeof ApiBuilderParameterLocation;
+  readonly location: ApiBuilderParameterLocation;
   readonly description?: string;
   readonly deprecation?: ApiBuilderDeprecationConfig;
   readonly required: boolean;
@@ -26,6 +22,7 @@ export interface ApiBuilderParameterConfig {
   readonly minimum?: number;
   readonly maximum?: number;
   readonly example?: string;
+  readonly attributes?: ApiBuilderAttributeConfig[];
 }
 
 export class ApiBuilderParameter {

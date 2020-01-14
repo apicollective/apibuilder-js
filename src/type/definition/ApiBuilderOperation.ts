@@ -1,29 +1,27 @@
-import { flow, get, getOr, inRange } from 'lodash/fp';
 import { ApiBuilderAttributeConfig } from './ApiBuilderAttribute';
 import { ApiBuilderBodyConfig } from './ApiBuilderBody';
 import { ApiBuilderDeprecationConfig } from './ApiBuilderDeprecation';
 import { ApiBuilderParameter, ApiBuilderParameterConfig } from './ApiBuilderParameter';
 import { ApiBuilderResource } from './ApiBuilderResource';
-import { ApiBuilderResponseConfig, ApiBuilderResponseCodeIntegerType, ApiBuilderResponse } from './ApiBuilderResponse';
+import { ApiBuilderResponseConfig, ApiBuilderResponse } from './ApiBuilderResponse';
 import { ApiBuilderService } from './ApiBuilderService';
 
 /**
  * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#enum-method
  */
-export enum ApiBuilderMethod {
-  GET = 'GET',
-  POST = 'POST',
-  PUT = 'PUT',
-  PATCH = 'PATCH',
-  DELETE = 'DELETE',
-  HEAD = 'HEAD',
-  CONNECT = 'CONNECT',
-  OPTIONS = 'OPTIONS',
-  TRACE = 'TRACE',
-}
+export type ApiBuilderMethod =
+  | 'GET'
+  | 'POST'
+  | 'PUT'
+  | 'PATCH'
+  | 'DELETE'
+  | 'HEAD'
+  | 'CONNECT'
+  | 'OPTIONS'
+  | 'TRACE';
 
 export interface ApiBuilderOperationConfig {
-  readonly method: ApiBuilderMethod | keyof typeof ApiBuilderMethod;
+  readonly method: ApiBuilderMethod;
   readonly path: string;
   readonly description?: string;
   readonly deprecation?: ApiBuilderDeprecationConfig;

@@ -10,8 +10,8 @@ import { astFromTypeName, typeFromAst } from '../../language';
 export interface ApiBuilderUnionTypeConfig {
   readonly type: string;
   readonly description?: string;
-  readonly attributes: ReadonlyArray<ApiBuilderAttributeConfig>;
   readonly deprecation?: ApiBuilderDeprecationConfig;
+  readonly attributes: ReadonlyArray<ApiBuilderAttributeConfig>;
   readonly default?: boolean;
   readonly discriminator_value?: string;
 }
