@@ -30,6 +30,10 @@ function findTypeByName<T>(
   ]));
 }
 
+function pascalCase(string: string) {
+  return upperFirst(camelCase(string));
+}
+
 export interface ApiBuilderAnnotationConfig {
   readonly name: string;
   readonly description?: string;
@@ -768,7 +772,33 @@ export class ApiBuilderOperation {
    * corresponding to this operation in code generators.
    */
   get nickname() {
-    throw new Error('Not Implemented');
+    let path = this.config.path;
+
+    if (this.resource.path != null) {
+      path = path.replace(this.resource.path, '');
+    }
+
+    if (path.startsWith('/')) {
+      path = path.slice(1);
+    }
+
+    const parts = path.split('/');
+
+    const dynamicParts = parts.filter((part) => {
+      return part.startsWith(':');
+    }).map((part, index) => {
+      const prefix = index === 0 ? 'By' : 'And';
+      return prefix + pascalCase(part);
+    });
+
+    const staticParts = parts.filter((part) => {
+      return !part.startsWith(':');
+    }).map((part, index) => {
+      const prefix = index === 0 ? '' : 'And';
+      return prefix + pascalCase(part);
+    });
+
+    return this.method.toLowerCase() + staticParts.concat(dynamicParts).join('');
   }
 
   get url() {
