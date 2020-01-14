@@ -1,9 +1,9 @@
 import keyBy from 'lodash/keyBy';
 import { ApiBuilderImport, ApiBuilderService, isEnumType, isModelType, isUnionType } from '../../src';
-import apidocApiJson from '../fixtures/apidoc-api.json';
+import apidocApi from '../fixtures/apidocApi';
 
-const service = new ApiBuilderService(apidocApiJson);
-const imports = keyBy(apidocApiJson.imports, 'namespace');
+const service = new ApiBuilderService(apidocApi);
+const imports = keyBy(apidocApi.imports, 'namespace');
 const subject = new ApiBuilderImport(imports['com.bryzek.apidoc.spec.v0'], service);
 
 describe('ApiBuilderImport', () => {

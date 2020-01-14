@@ -10,9 +10,9 @@ import {
   typeFromAst,
 } from '../../src';
 
-import apidocApiJson from '../fixtures/apidoc-api.json';
+import apidocApi from '../fixtures/apidocApi';
 
-const service = new ApiBuilderService(apidocApiJson);
+const service = new ApiBuilderService(apidocApi);
 
 describe('typeFromAst', () => {
   test('should return instance corresponding to "string" type', () => {

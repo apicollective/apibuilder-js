@@ -1,22 +1,22 @@
 import { ApiBuilderService } from '../../src';
-import apidocApiJson from '../fixtures/apidoc-api.json';
+import apidocApi from '../fixtures/apidocApi';
 
-const service = new ApiBuilderService(apidocApiJson);
+const service = new ApiBuilderService(apidocApi);
 
 describe('ApiBuilderService', () => {
   test('should have property with name', () => {
-    expect(service).toHaveProperty('name', apidocApiJson.name);
+    expect(service).toHaveProperty('name', apidocApi.name);
   });
 
   test('should have property with organization key', () => {
-    expect(service).toHaveProperty('organizationKey', apidocApiJson.organization.key);
+    expect(service).toHaveProperty('organizationKey', apidocApi.organization.key);
   });
 
   test('should have property with namespace', () => {
-    expect(service).toHaveProperty('namespace', apidocApiJson.namespace);
+    expect(service).toHaveProperty('namespace', apidocApi.namespace);
   });
 
   test('should have property with version', () => {
-    expect(service).toHaveProperty('version', apidocApiJson.version);
+    expect(service).toHaveProperty('version', apidocApi.version);
   });
 });

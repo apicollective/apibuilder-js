@@ -1,10 +1,10 @@
 import keyBy from 'lodash/keyBy';
 
 import { ApiBuilderModel, ApiBuilderService } from '../../src';
-import apidocApiJson from '../fixtures/apidoc-api.json';
+import apidocApi from '../fixtures/apidocApi';
 
-const service = new ApiBuilderService(apidocApiJson);
-const models = keyBy(apidocApiJson.models, 'name');
+const service = new ApiBuilderService(apidocApi);
+const models = keyBy(apidocApi.models, 'name');
 
 describe('ApiBuilderModel', () => {
   test('should have property with base type name', () => {

@@ -3,10 +3,10 @@ import keyBy from 'lodash/keyBy';
 
 import { ApiBuilderEnum, ApiBuilderEnumValue, ApiBuilderService } from '../../src';
 import { createMockDeprecation, createMockEnum } from '../helpers/mocks';
-import apidocApiJson from '../fixtures/apidoc-api.json';
+import apidocApi from '../fixtures/apidocApi';
 
-const service = new ApiBuilderService(apidocApiJson);
-const enumerations = keyBy(apidocApiJson.enums, 'name');
+const service = new ApiBuilderService(apidocApi);
+const enumerations = keyBy(apidocApi.enums, 'name');
 
 describe('ApiBuilderEnum', () => {
   test('should have static function to create enumeration from schema declaration', () => {

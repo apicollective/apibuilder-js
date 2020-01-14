@@ -1,10 +1,10 @@
 import { ApiBuilderService } from '../../src';
-import apidocApiJson from '../fixtures/apidoc-api.json';
+import apidocApi from '../fixtures/apidocApi';
 
 describe('ApiBuilderOperation', () => {
   describe('#getResponseTypeByCode', () => {
     test('returns type matching response code', () => {
-      const service = new ApiBuilderService(apidocApiJson);
+      const service = new ApiBuilderService(apidocApi);
       const resource = service.resources
         .find(resource => resource.typeName === 'application');
       const operation = resource.operations
