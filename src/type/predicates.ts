@@ -81,7 +81,7 @@ export function isType(type: any): type is ApiBuilderType {
  * If a given type is an enclosing type, this recursively strips the enclosing
  * wrappers and returns the underlying type.
  */
-export function getBaseType(type: ApiBuilderType): ApiBuilderType {
+export function getBaseType(type: ApiBuilderType): Exclude<ApiBuilderType, ApiBuilderEnclosingType> {
   if (isEnclosingType(type)) {
     return getBaseType(type.ofType);
   }
