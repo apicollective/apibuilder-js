@@ -744,7 +744,11 @@ export class ApiBuilderOperation {
   }
 
   get body() {
-    return this.config.body;
+    if (this.config.body != null) {
+      return new ApiBuilderBody(this.config.body, this.service);
+    }
+
+    return undefined;
   }
 
   get method() {
