@@ -3,6 +3,7 @@ import invariant from 'invariant';
 import pluralize from 'pluralize';
 
 import { astFromTypeName, FullyQualifiedName, typeFromAst } from '../language';
+import { isModelType, isEnumType } from './predicates';
 
 /**
  * Workaround for union without discriminant properties
@@ -241,6 +242,62 @@ export class ApiBuilderEnum {
     }
 
     return undefined;
+  }
+
+  /**
+   * Returns a list of unions where this type is present as a union type.
+   */
+  get unions(): ApiBuilderUnion[] {
+    return this.service.unions.filter((union) => {
+      return union.types.some((unionType) => {
+        return this.isSame(unionType.type);
+      });
+    });
+  }
+
+  /**
+   * Returns name for the type discriminator field when this type is present
+   * as a union type for one or more unions.
+   */
+  get discriminator() {
+    const discriminators = this.unions.map((union) => {
+      return union.discriminator;
+    }).filter((discriminator, index, self) => {
+      return self.indexOf(discriminator) === index;
+    });
+
+    if (discriminators.length > 1) {
+      throw new Error('Name for the type discriminator field must be the same across all unions');
+    }
+
+    return discriminators.length ? discriminators[0] : undefined;
+  }
+
+  /**
+   * Returns the string to use in the discriminator field to identify this type
+   * when present as a union type for one more unions.
+   */
+  get discriminatorValue() {
+    const discriminatorValues = this.unions.reduce<string[]>((self, union) => {
+      return self.concat(union.types.filter((unionType) => {
+        return this.isSame(unionType.type);
+      }).map((unionType) => {
+        return unionType.discriminatorValue;
+      }));
+    // tslint:disable-next-line: align
+    }, []).filter((value, index, self) => {
+      return self.indexOf(value) === index;
+    });
+
+    if (discriminatorValues.length > 1) {
+      throw new Error('Discriminator value must the same across all union types');
+    }
+
+    return discriminatorValues.length ? discriminatorValues[0] : undefined;
+  }
+
+  public isSame(type: ApiBuilderType): boolean {
+    return isEnumType(type) && type.fullName === this.fullName;
   }
 
   public toString() {
@@ -690,12 +747,71 @@ export class ApiBuilderModel {
     return this.config.deprecation != null;
   }
 
+  /**
+   * Returns a list of unions where this type is present as a union type.
+   */
+  get unions(): ApiBuilderUnion[] {
+    return this.service.unions.filter((union) => {
+      return union.types.some((unionType) => {
+        return this.isSame(unionType.type);
+      });
+    });
+  }
+
+  /**
+   * Returns name for the type discriminator field when this type is present
+   * as a union type for one or more unions.
+   */
+  get discriminator() {
+    const discriminators = this.unions.map((union) => {
+      return union.discriminator;
+    }).filter((discriminator, index, self) => {
+      return self.indexOf(discriminator) === index;
+    });
+
+    if (discriminators.length > 1) {
+      throw new Error('Name for the type discriminator field must be the same across all unions');
+    }
+
+    return discriminators.length ? discriminators[0] : undefined;
+  }
+
+  /**
+   * Returns the string to use in the discriminator field to identify this type
+   * when present as a union type for one more unions.
+   */
+  get discriminatorValue() {
+    const discriminatorValues = this.unions.reduce<string[]>((self, union) => {
+      return self.concat(union.types.filter((unionType) => {
+        return this.isSame(unionType.type);
+      }).map((unionType) => {
+        return unionType.discriminatorValue;
+      }));
+    // tslint:disable-next-line: align
+    }, []).filter((value, index, self) => {
+      return self.indexOf(value) === index;
+    });
+
+    if (discriminatorValues.length > 1) {
+      throw new Error('Discriminator value must the same across all union types');
+    }
+
+    return discriminatorValues.length ? discriminatorValues[0] : undefined;
+  }
+
   get description() {
     return this.config.description;
   }
 
   get fields() {
     return this.config.fields.map(field => new ApiBuilderField(field, this.service));
+  }
+
+  /**
+   * Returns whether the specified type is the same as this model type.
+   */
+  public isSame(type: ApiBuilderType): boolean {
+    return isModelType(type) && type.fullName === this.fullName;
   }
 
   public toString() {
