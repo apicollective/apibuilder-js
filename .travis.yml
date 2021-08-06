@@ -20,4 +20,4 @@ jobs:
     script: npm run build
 branches:
   only:
-  main
+  - main
