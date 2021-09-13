@@ -1,7 +1,12 @@
 import invariant from 'invariant';
-import { AstNode, EnclosingTypeNode, astFromTypeName } from './ast';
-import { Regex } from './constants';
-import { isArrayTypeName, isMapTypeName, isPrimitiveTypeName } from './predicates';
+// eslint-disable-next-line import/no-cycle -- needs larger refactor to remove dependency cycle
+import {
+  isPrimitiveTypeName,
+  getBaseTypeName,
+  getNestedTypeName,
+  isArrayTypeName,
+  isMapTypeName,
+} from './ast';
 
 export function isFullyQualifiedName(identifier: string) {
   return isPrimitiveTypeName(identifier) || getBaseTypeName(identifier).lastIndexOf('.') >= 0;
@@ -17,54 +22,7 @@ export function assertFullyQualifiedName(fullyQualifiedName: string) {
   );
 }
 
-/**
- * API Builder types can be complex (e.g. array of strings, map of strings,
- * maps of array of strings etc.). By design, all entries in an array or map
- * must be of the same type: this is called the base type.
- * @example
- * getBaseTypeName("map[string]")
- * //=> "string"
- * getBaseTypeName("map[[string]]")
- * //=> "string"
- */
-export function getBaseTypeName(type: string | AstNode): string {
-  if (typeof type === 'string') {
-    return getBaseTypeName(astFromTypeName(type));
-  }
-
-  if ((<EnclosingTypeNode>type).type) {
-    return getBaseTypeName((<EnclosingTypeNode>type).type);
-  }
-
-  return type.name;
-}
-
-/**
- * Given the name of an enclosing type as it appears in an API builder schema,
- * returns the API builder type name of the underlying type.
- * @example
- * getNestedTypeName("map[string]");
- * //=> "string"
- * getNestedTypeName("map[[string]]");
- * //=> "[string]"
- */
-export function getNestedTypeName(type: string): string {
-  const mapMatch = type.match(Regex.OBJECTOF);
-  if (mapMatch) {
-    const [, $1] = mapMatch;
-    return $1;
-  }
-
-  const arrayMatch = type.match(Regex.ARRAYOF);
-  if (arrayMatch) {
-    const [, $1] = arrayMatch;
-    return $1;
-  }
-
-  return type;
-}
-
-export class FullyQualifiedName {
+export default class FullyQualifiedName {
   /**
    * The fully qualified name of the type, including its package name.
    */

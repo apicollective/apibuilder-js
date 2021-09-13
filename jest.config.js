@@ -3,11 +3,11 @@ module.exports = {
     'ts-jest': {
       diagnostics: {
         ignoreCodes: [7006],
-      }
-    }
+      },
+    },
   },
   transform: {
-    '^.+\\.tsx?$': 'ts-jest'
+    '^.+\\.tsx?$': 'ts-jest',
   },
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$',
   moduleFileExtensions: [
@@ -16,6 +16,6 @@ module.exports = {
     'js',
     'jsx',
     'json',
-    'node'
+    'node',
   ],
-}
+};

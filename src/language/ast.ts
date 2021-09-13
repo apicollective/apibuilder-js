@@ -1,5 +1,12 @@
-import { ApiBuilderArray, ApiBuilderMap, ApiBuilderPrimitiveType, ApiBuilderService, ApiBuilderType } from '../type';
-import { FullyQualifiedName, Kind, getNestedTypeName, isArrayTypeName, isMapTypeName, isPrimitiveTypeName } from '../language';
+import includes from 'lodash/includes';
+import ApiBuilderArray from '../type/ApiBuilderArray';
+import ApiBuilderMap from '../type/ApiBuilderMap';
+import ApiBuilderPrimitiveType from '../type/ApiBuilderPrimitiveType';
+import type ApiBuilderService from '../type/ApiBuilderService';
+import { ApiBuilderType } from '../type/types';
+import { Regex, Kind } from './constants';
+// eslint-disable-next-line import/no-cycle -- needs larger refactor to remove dependency cycle
+import FullyQualifiedName from './FullyQualifiedName';
 
 export interface Node {
   name: string;
@@ -11,6 +18,75 @@ export interface EnclosingTypeNode {
 }
 
 export type AstNode = Node | EnclosingTypeNode;
+
+/**
+ * Given the name of a type as it appears in an API builder schema, returns
+ * whether it is a representation of an array type.
+ * @example
+ * isArrayTypeName("[string]");
+ * //=> true
+ * isArrayTypeName("string");
+ * //=> false
+ */
+export function isArrayTypeName(type: string) {
+  return Regex.ARRAYOF.test(type);
+}
+
+/**
+ * Given the name of a type as it appears in an API builder schema, returns
+ * whether it is a representation of a map type.
+ * @example
+ * isMapTypeName("map[string]");
+ * //=> true
+ * isMapTypeName("string");
+ * //=> false
+ */
+export function isMapTypeName(type: string) {
+  return Regex.OBJECTOF.test(type);
+}
+
+/**
+ * Returns the type name for the specified API builder AST.
+ * @example
+ * typeNameFromAst({ name: "map", type: { name: "string" } });
+ * //=> "map[string]"
+ */
+export function typeNameFromAst(ast: AstNode): string {
+  if (ast.name === Kind.MAP) {
+    return `map[${typeNameFromAst((<EnclosingTypeNode>ast).type)}]`;
+  }
+
+  if (ast.name === Kind.ARRAY) {
+    return `[${typeNameFromAst((<EnclosingTypeNode>ast).type)}]`;
+  }
+
+  return ast.name;
+}
+
+/**
+ * Given the name of an enclosing type as it appears in an API builder schema,
+ * returns the API builder type name of the underlying type.
+ * @example
+ * getNestedTypeName("map[string]");
+ * //=> "string"
+ * getNestedTypeName("map[[string]]");
+ * //=> "[string]"
+ */
+export function getNestedTypeName(type: string): string {
+  const mapMatch = type.match(Regex.OBJECTOF);
+  if (mapMatch) {
+    const [, $1] = mapMatch;
+    return $1;
+  }
+
+  const arrayMatch = type.match(Regex.ARRAYOF);
+  if (arrayMatch) {
+    const [, $1] = arrayMatch;
+    return $1;
+  }
+
+  return type;
+}
 
 /**
  * Produces an AST given the name of a type as it appears in an API builder schema.
@@ -41,21 +117,56 @@ export function astFromTypeName(typeName: string): AstNode {
 }
 
 /**
- * Returns the type name for the specified API builder AST.
+ * API Builder types can be complex (e.g. array of strings, map of strings,
+ * maps of array of strings etc.). By design, all entries in an array or map
+ * must be of the same type: this is called the base type.
  * @example
- * typeNameFromAst({ name: "map", type: { name: "string" } });
- * //=> "map[string]"
+ * getBaseTypeName("map[string]")
+ * //=> "string"
+ * getBaseTypeName("map[[string]]")
+ * //=> "string"
  */
-export function typeNameFromAst(ast: AstNode): string {
-  if (ast.name === Kind.MAP) {
-    return `map[${typeNameFromAst((<EnclosingTypeNode>ast).type)}]`;
+export function getBaseTypeName(type: string | AstNode): string {
+  if (typeof type === 'string') {
+    return getBaseTypeName(astFromTypeName(type));
   }
 
-  if (ast.name === Kind.ARRAY) {
-    return `[${typeNameFromAst((<EnclosingTypeNode>ast).type)}]`;
+  if ((<EnclosingTypeNode>type).type) {
+    return getBaseTypeName((<EnclosingTypeNode>type).type);
   }
 
-  return ast.name;
+  return type.name;
+}
+
+/**
+ * Given the name of a type as it appears in an API builder schema, returns
+ * whether its base type represents a primitive type.
+ * @example
+ * isPrimitiveTypeName("string");
+ * //=> true
+ * isPrimitiveTypeName("map[date_time_iso8601]");
+ * // => true
+ * isPrimitiveTypeName("[com.bryzek.spec.v0.models.reference]");
+ * // => false
+ */
+export function isPrimitiveTypeName(type: string): boolean {
+  return includes(
+    [
+      Kind.BOOLEAN,
+      Kind.DATE_ISO8601,
+      Kind.DATE_TIME_ISO8601,
+      Kind.DECIMAL,
+      Kind.DOUBLE,
+      Kind.INTEGER,
+      Kind.JSON,
+      Kind.LONG,
+      Kind.OBJECT,
+      Kind.STRING,
+      Kind.UNIT,
+      Kind.UUID,
+    ],
+    getBaseTypeName(type),
+  );
 }
 
 /**
