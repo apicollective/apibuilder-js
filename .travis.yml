@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- 8
+- 14
 cache:
   directories:
   - $HOME/.npm
@@ -13,6 +13,8 @@ jobs:
   - stage: test
     name: "Lint"
     script: npm run lint
+  - name: "Check Types"
+    script: npm run check-types
   - name: "Unit Tests"
     script: npm run coverage -- --maxWorkers=4 --ci
   - stage: build
