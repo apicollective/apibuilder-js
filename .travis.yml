@@ -20,6 +20,3 @@ jobs:
   - stage: build
     name: "Compile"
     script: npm run build
-branches:
-  only:
-  - main
