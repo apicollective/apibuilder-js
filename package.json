@@ -8,7 +8,7 @@
     "build": "tsc --project ./tsconfig.build.json",
     "clean": "rm -rf dist",
     "coverage": "jest --coverage",
-    "lint": "tslint -c tslint.json -p tsconfig.json",
+    "lint": "eslint . --ext .js,.ts --quiet",
     "prepublishOnly": "run-s clean build",
     "test": "jest"
   },
@@ -39,12 +39,17 @@
     "@types/lodash": "^4.14.149",
     "@types/node": "^10.14.19",
     "@types/pluralize": "0.0.29",
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
+    "@typescript-eslint/parser": "^4.33.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-airbnb-typescript": "^14.0.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-jest": "^24.5.2",
     "faker": "^4.1.0",
     "jest": "^24.9.0",
     "npm-run-all": "^4.1.5",
     "ts-jest": "^24.3.0",
-    "tslint": "^5.20.1",
-    "tslint-config-airbnb": "^5.11.2",
     "typescript": "^3.7.4"
   }
 }
