@@ -1,5 +1,3 @@
-/* tslint:disable:variable-name */
-
 export const Regex = {
   ARRAYOF: /^\[(.+)\]$/,
   OBJECTOF: /^map\[(.+)\]$/,

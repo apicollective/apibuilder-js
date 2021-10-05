@@ -1,3 +1,5 @@
+/* eslint-disable import/no-cycle */
+
 import { includes } from 'lodash';
 
 import { Kind, Regex } from './constants';

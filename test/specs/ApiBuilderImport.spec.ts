@@ -1,5 +1,11 @@
 import keyBy from 'lodash/keyBy';
-import { ApiBuilderImport, ApiBuilderService, isEnumType, isModelType, isUnionType } from '../../src';
+import {
+  ApiBuilderImport,
+  ApiBuilderService,
+  isEnumType,
+  isModelType,
+  isUnionType,
+} from '../../src';
 import apidocApi from '../fixtures/apidocApi';
 
 const service = new ApiBuilderService(apidocApi);
