@@ -1,20 +1,14 @@
 /* eslint-disable max-classes-per-file, import/no-cycle, @typescript-eslint/no-use-before-define */
 
-import {
-  camelCase,
-  flatMap,
-  map,
-  matchesProperty,
-  overSome,
-  snakeCase,
-  toUpper,
-  upperFirst,
-} from 'lodash';
+import { flatMap } from 'lodash';
 import invariant from 'invariant';
 import pluralize from 'pluralize';
 
 import { astFromTypeName, FullyQualifiedName, typeFromAst } from '../language';
 import { isModelType, isEnumType } from './predicates';
+import constantCase from '../utilities/constantCase';
+import pascalCase from '../utilities/pascalCase';
+import findTypeByName from '../utilities/findTypeByName';
 
 /**
  * Workaround for union without discriminant properties
@@ -31,20 +25,6 @@ type StrictUnionHelper<T, A> = T extends unknown
   : never;
 
 type StrictUnion<T> = Compute<StrictUnionHelper<T, T>>;
-
-function findTypeByName<T>(
-  types: T[],
-  name: string,
-): T | undefined {
-  return types.find(overSome([
-    matchesProperty('shortName', name),
-    matchesProperty('baseTypeName', name),
-  ]));
-}
-
-function pascalCase(string: string) {
-  return upperFirst(camelCase(string));
-}
 
 export interface ApiBuilderAnnotationConfig {
   readonly name: string;
@@ -227,7 +207,7 @@ export class ApiBuilderEnum {
    * corresponding to this enumeration in code generators.
    */
   get nickname() {
-    return upperFirst(camelCase(this.name));
+    return pascalCase(this.name);
   }
 
   get plural() {
@@ -345,7 +325,7 @@ export class ApiBuilderEnumValue {
    * variable corresponding to this enumeration value in code generators.
    */
   get nickname() {
-    return toUpper(snakeCase(this.name));
+    return constantCase(this.name);
   }
 
   /**
@@ -1390,16 +1370,11 @@ export class ApiBuilderService {
       return this.typesByShortName[typeName];
     }
 
-    const predicate = overSome([
-      matchesProperty('shortName', typeName),
-      matchesProperty('baseTypeName', typeName),
-    ]);
-
     return (
-      flatMap(this.imports, 'enums').find(predicate)
-      || flatMap(this.imports, 'models').find(predicate)
-      || flatMap(this.imports, 'unions').find(predicate)
-    ) as ApiBuilderEnum | ApiBuilderModel | ApiBuilderUnion | undefined;
+      findTypeByName(flatMap(this.imports, (_) => _.enums), typeName)
+      || findTypeByName(flatMap(this.imports, (_) => _.models), typeName)
+      || findTypeByName(flatMap(this.imports, (_) => _.unions), typeName)
+    );
   }
 
   public toString() {
@@ -1496,9 +1471,7 @@ export class ApiBuilderUnion {
   }
 
   get types() {
-    return map(this.config.types, (
-      (type) => new ApiBuilderUnionType(type, this.service)
-    ));
+    return this.config.types.map((type) => new ApiBuilderUnionType(type, this.service));
   }
 
   get attributes() {
