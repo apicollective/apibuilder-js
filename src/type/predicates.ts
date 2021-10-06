@@ -1,3 +1,5 @@
+/* eslint-disable import/no-cycle */
+
 import {
   ApiBuilderArray,
   ApiBuilderEnclosingType,
@@ -56,10 +58,7 @@ export function isUnionType(type: any): type is ApiBuilderUnion {
  * API Builder enclosing types.
  */
 export function isEnclosingType(type: any): type is ApiBuilderEnclosingType {
-  return (
-    isArrayType(type) ||
-    isMapType(type)
-  );
+  return isArrayType(type) || isMapType(type);
 }
 
 /**
@@ -67,21 +66,21 @@ export function isEnclosingType(type: any): type is ApiBuilderEnclosingType {
  * API Builder types.
  */
 export function isType(type: any): type is ApiBuilderType {
-  return (
-    isArrayType(type) ||
-    isMapType(type) ||
-    isPrimitiveType(type) ||
-    isModelType(type) ||
-    isEnumType(type) ||
-    isUnionType(type)
-  );
+  return isArrayType(type)
+    || isMapType(type)
+    || isPrimitiveType(type)
+    || isModelType(type)
+    || isEnumType(type)
+    || isUnionType(type);
 }
 
 /**
  * If a given type is an enclosing type, this recursively strips the enclosing
  * wrappers and returns the underlying type.
  */
-export function getBaseType(type: ApiBuilderType): Exclude<ApiBuilderType, ApiBuilderEnclosingType> {
+export function getBaseType(
+  type: ApiBuilderType,
+): Exclude<ApiBuilderType, ApiBuilderEnclosingType> {
   if (isEnclosingType(type)) {
     return getBaseType(type.ofType);
   }

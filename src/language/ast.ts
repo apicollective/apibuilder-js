@@ -1,5 +1,21 @@
-import { ApiBuilderArray, ApiBuilderMap, ApiBuilderPrimitiveType, ApiBuilderService, ApiBuilderType } from '../type';
-import { FullyQualifiedName, Kind, getNestedTypeName, isArrayTypeName, isMapTypeName, isPrimitiveTypeName } from '../language';
+/* eslint-disable import/no-cycle */
+
+import {
+  ApiBuilderArray,
+  ApiBuilderMap,
+  ApiBuilderPrimitiveType,
+  ApiBuilderService,
+  ApiBuilderType,
+} from '../type';
+
+import {
+  FullyQualifiedName,
+  Kind,
+  getNestedTypeName,
+  isArrayTypeName,
+  isMapTypeName,
+  isPrimitiveTypeName,
+} from '.';
 
 export interface Node {
   name: string;

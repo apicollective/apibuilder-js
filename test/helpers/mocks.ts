@@ -8,13 +8,17 @@ import {
   Kind,
 } from '../../src';
 
-export function createMockDeprecation(config: Partial<ApiBuilderDeprecationConfig> = {}): ApiBuilderDeprecationConfig {
+export function createMockDeprecation(
+  config: Partial<ApiBuilderDeprecationConfig> = {},
+): ApiBuilderDeprecationConfig {
   return {
     description: config.description,
   };
 }
 
-export function createMockEnumValue(config: Partial<ApiBuilderEnumValueConfig> = {}): ApiBuilderEnumValueConfig {
+export function createMockEnumValue(
+  config: Partial<ApiBuilderEnumValueConfig> = {},
+): ApiBuilderEnumValueConfig {
   return {
     name: defaultTo(config.name, faker.lorem.word()),
     description: config.description,
@@ -34,7 +38,9 @@ export function createMockEnum(config: Partial<ApiBuilderEnumConfig> = {}): ApiB
   };
 }
 
-export function createMockField(config: Partial<ApiBuilderFieldConfig> = {}): ApiBuilderFieldConfig {
+export function createMockField(
+  config: Partial<ApiBuilderFieldConfig> = {},
+): ApiBuilderFieldConfig {
   return {
     name: defaultTo(config.name, faker.lorem.word()),
     type: defaultTo(config.type, Kind.STRING),

@@ -1,9 +1,14 @@
-import { camelCase, flatMap, map, matchesProperty, overSome, snakeCase, toUpper, upperFirst } from 'lodash';
+/* eslint-disable max-classes-per-file, import/no-cycle, @typescript-eslint/no-use-before-define */
+
+import { flatMap } from 'lodash';
 import invariant from 'invariant';
 import pluralize from 'pluralize';
 
 import { astFromTypeName, FullyQualifiedName, typeFromAst } from '../language';
 import { isModelType, isEnumType } from './predicates';
+import constantCase from '../utilities/constantCase';
+import pascalCase from '../utilities/pascalCase';
+import findTypeByName from '../utilities/findTypeByName';
 
 /**
  * Workaround for union without discriminant properties
@@ -20,20 +25,6 @@ type StrictUnionHelper<T, A> = T extends unknown
   : never;
 
 type StrictUnion<T> = Compute<StrictUnionHelper<T, T>>;
-
-function findTypeByName<T>(
-  types: T[],
-  name: string,
-): T | undefined {
-  return types.find(overSome([
-    matchesProperty('shortName', name),
-    matchesProperty('baseTypeName', name),
-  ]));
-}
-
-function pascalCase(string: string) {
-  return upperFirst(camelCase(string));
-}
 
 export interface ApiBuilderAnnotationConfig {
   readonly name: string;
@@ -95,6 +86,7 @@ export interface ApiBuilderBodyConfig {
 
 export class ApiBuilderBody {
   private config: ApiBuilderBodyConfig;
+
   private service: ApiBuilderService;
 
   constructor(
@@ -151,7 +143,9 @@ export interface ApiBuilderEnumConfig {
  */
 export class ApiBuilderEnum {
   private config: ApiBuilderEnumConfig;
+
   private fullyQualifiedName: FullyQualifiedName;
+
   private service: ApiBuilderService;
 
   /**
@@ -173,14 +167,14 @@ export class ApiBuilderEnum {
   ) {
     invariant(
       !fullyQualifiedName.isEnclosingType,
-      `${String(fullyQualifiedName)} is the name of a collection type. ` +
-      'You cannot create an enumeration from a collection type.',
+      `${String(fullyQualifiedName)} is the name of a collection type. `
+      + 'You cannot create an enumeration from a collection type.',
     );
 
     invariant(
       !fullyQualifiedName.isPrimitiveType,
-      `${String(fullyQualifiedName)} is the name of a primitive type. ` +
-      'You cannot create an enumeration from a primitive type.',
+      `${String(fullyQualifiedName)} is the name of a primitive type. `
+      + 'You cannot create an enumeration from a primitive type.',
     );
 
     this.config = config;
@@ -213,7 +207,7 @@ export class ApiBuilderEnum {
    * corresponding to this enumeration in code generators.
    */
   get nickname() {
-    return upperFirst(camelCase(this.name));
+    return pascalCase(this.name);
   }
 
   get plural() {
@@ -225,7 +219,7 @@ export class ApiBuilderEnum {
   }
 
   get values() {
-    return this.config.values.map(value => new ApiBuilderEnumValue(value));
+    return this.config.values.map((value) => new ApiBuilderEnumValue(value));
   }
 
   get attributes() {
@@ -248,11 +242,8 @@ export class ApiBuilderEnum {
    * Returns a list of unions where this type is present as a union type.
    */
   get unions(): ApiBuilderUnion[] {
-    return this.service.unions.filter((union) => {
-      return union.types.some((unionType) => {
-        return this.isSame(unionType.type);
-      });
-    });
+    return this.service.unions
+      .filter((union) => union.types.some((unionType) => this.isSame(unionType.type)));
   }
 
   /**
@@ -260,11 +251,9 @@ export class ApiBuilderEnum {
    * as a union type for one or more unions.
    */
   get discriminator() {
-    const discriminators = this.unions.map((union) => {
-      return union.discriminator;
-    }).filter((discriminator, index, self) => {
-      return self.indexOf(discriminator) === index;
-    });
+    const discriminators = this.unions
+      .map((union) => union.discriminator)
+      .filter((discriminator, index, self) => self.indexOf(discriminator) === index);
 
     if (discriminators.length > 1) {
       throw new Error('Name for the type discriminator field must be the same across all unions');
@@ -278,16 +267,16 @@ export class ApiBuilderEnum {
    * when present as a union type for one more unions.
    */
   get discriminatorValue() {
-    const discriminatorValues = this.unions.reduce<string[]>((self, union) => {
-      return self.concat(union.types.filter((unionType) => {
-        return this.isSame(unionType.type);
-      }).map((unionType) => {
-        return unionType.discriminatorValue;
-      }));
-    // tslint:disable-next-line: align
-    }, []).filter((value, index, self) => {
-      return self.indexOf(value) === index;
-    });
+    const discriminatorValues = this.unions
+      .reduce<string[]>(
+      (self, union) => self.concat(
+        union.types
+          .filter((unionType) => this.isSame(unionType.type))
+          .map((unionType) => unionType.discriminatorValue),
+      ),
+      [],
+    )
+      .filter((value, index, self) => self.indexOf(value) === index);
 
     if (discriminatorValues.length > 1) {
       throw new Error('Discriminator value must the same across all union types');
@@ -309,7 +298,7 @@ export interface ApiBuilderEnumValueConfig {
   readonly name: string;
   readonly description?: string;
   readonly deprecation?: ApiBuilderDeprecationConfig;
-  readonly attributes?:	ReadonlyArray<ApiBuilderAttributeConfig>;
+  readonly attributes?: ReadonlyArray<ApiBuilderAttributeConfig>;
   readonly value?: string;
 }
 
@@ -336,7 +325,7 @@ export class ApiBuilderEnumValue {
    * variable corresponding to this enumeration value in code generators.
    */
   get nickname() {
-    return toUpper(snakeCase(this.name));
+    return constantCase(this.name);
   }
 
   /**
@@ -394,6 +383,7 @@ export interface ApiBuilderFieldConfig {
 
 export class ApiBuilderField {
   private config: ApiBuilderFieldConfig;
+
   private service: ApiBuilderService;
 
   constructor(config: ApiBuilderFieldConfig, service: ApiBuilderService) {
@@ -469,8 +459,11 @@ export interface ApiBuilderFileConfig {
  */
 export class ApiBuilderFile {
   public name: string;
+
   public dir: string;
+
   public contents: string;
+
   public flags: ApiBuilderFileFlag | undefined;
 
   /**
@@ -519,6 +512,7 @@ export interface ApiBuilderImportConfig {
 
 export class ApiBuilderImport {
   private config: ApiBuilderImportConfig;
+
   private service: ApiBuilderService;
 
   constructor(config: ApiBuilderImportConfig, service: ApiBuilderService) {
@@ -642,7 +636,7 @@ export class ApiBuilderInvocationForm {
   }
 
   get importedServices() {
-    return (this.config.imported_services || []).map(importedService => (
+    return (this.config.imported_services || []).map((importedService) => (
       new ApiBuilderService(importedService)
     ));
   }
@@ -689,7 +683,9 @@ export interface ApiBuilderModelConfig {
 
 export class ApiBuilderModel {
   private config: ApiBuilderModelConfig;
+
   private fullyQualifiedName: FullyQualifiedName;
+
   private service: ApiBuilderService;
 
   /**
@@ -712,14 +708,14 @@ export class ApiBuilderModel {
   ) {
     invariant(
       !fullyQualifiedName.isEnclosingType,
-      `${String(fullyQualifiedName)} is the name of an enclosing type. ` +
-      'You cannot create a model from an enclosing type.',
+      `${String(fullyQualifiedName)} is the name of an enclosing type. `
+      + 'You cannot create a model from an enclosing type.',
     );
 
     invariant(
       !fullyQualifiedName.isPrimitiveType,
-      `${String(fullyQualifiedName)} is the name of a primitive type. ` +
-      'You cannot create an model from a primitive type.',
+      `${String(fullyQualifiedName)} is the name of a primitive type. `
+      + 'You cannot create an model from a primitive type.',
     );
 
     this.config = config;
@@ -751,11 +747,8 @@ export class ApiBuilderModel {
    * Returns a list of unions where this type is present as a union type.
    */
   get unions(): ApiBuilderUnion[] {
-    return this.service.unions.filter((union) => {
-      return union.types.some((unionType) => {
-        return this.isSame(unionType.type);
-      });
-    });
+    return this.service.unions
+      .filter((union) => union.types.some((unionType) => this.isSame(unionType.type)));
   }
 
   /**
@@ -763,11 +756,9 @@ export class ApiBuilderModel {
    * as a union type for one or more unions.
    */
   get discriminator() {
-    const discriminators = this.unions.map((union) => {
-      return union.discriminator;
-    }).filter((discriminator, index, self) => {
-      return self.indexOf(discriminator) === index;
-    });
+    const discriminators = this.unions
+      .map((union) => union.discriminator)
+      .filter((discriminator, index, self) => self.indexOf(discriminator) === index);
 
     if (discriminators.length > 1) {
       throw new Error('Name for the type discriminator field must be the same across all unions');
@@ -781,16 +772,16 @@ export class ApiBuilderModel {
    * when present as a union type for one more unions.
    */
   get discriminatorValue() {
-    const discriminatorValues = this.unions.reduce<string[]>((self, union) => {
-      return self.concat(union.types.filter((unionType) => {
-        return this.isSame(unionType.type);
-      }).map((unionType) => {
-        return unionType.discriminatorValue;
-      }));
-    // tslint:disable-next-line: align
-    }, []).filter((value, index, self) => {
-      return self.indexOf(value) === index;
-    });
+    const discriminatorValues = this.unions
+      .reduce<string[]>(
+      (self, union) => self.concat(
+        union.types
+          .filter((unionType) => this.isSame(unionType.type))
+          .map((unionType) => unionType.discriminatorValue),
+      ),
+      [],
+    )
+      .filter((value, index, self) => self.indexOf(value) === index);
 
     if (discriminatorValues.length > 1) {
       throw new Error('Discriminator value must the same across all union types');
@@ -804,7 +795,7 @@ export class ApiBuilderModel {
   }
 
   get fields() {
-    return this.config.fields.map(field => new ApiBuilderField(field, this.service));
+    return this.config.fields.map((field) => new ApiBuilderField(field, this.service));
   }
 
   /**
@@ -846,7 +837,9 @@ export interface ApiBuilderOperationConfig {
 
 export class ApiBuilderOperation {
   private config: ApiBuilderOperationConfig;
+
   public resource: ApiBuilderResource;
+
   private service: ApiBuilderService;
 
   constructor(
@@ -892,7 +885,7 @@ export class ApiBuilderOperation {
    * corresponding to this operation in code generators.
    */
   get nickname() {
-    let path = this.config.path;
+    let { path } = this.config;
 
     if (this.resource.path != null) {
       path = path.replace(this.resource.path, '');
@@ -904,16 +897,12 @@ export class ApiBuilderOperation {
 
     const parts = path.split('/');
 
-    const dynamicParts = parts.filter((part) => {
-      return part.startsWith(':');
-    }).map((part, index) => {
+    const dynamicParts = parts.filter((part) => part.startsWith(':')).map((part, index) => {
       const prefix = index === 0 ? 'By' : 'And';
       return prefix + pascalCase(part);
     });
 
-    const staticParts = parts.filter((part) => {
-      return !part.startsWith(':');
-    }).map((part, index) => {
+    const staticParts = parts.filter((part) => !part.startsWith(':')).map((part, index) => {
       const prefix = index === 0 ? '' : 'And';
       return prefix + pascalCase(part);
     });
@@ -922,7 +911,11 @@ export class ApiBuilderOperation {
   }
 
   get url() {
-    return `${this.service.baseUrl}${this.config.path}`;
+    if (this.service.baseUrl != null) {
+      return `${this.service.baseUrl}${this.config.path}`;
+    }
+
+    return this.config.path;
   }
 
   get path() {
@@ -931,14 +924,12 @@ export class ApiBuilderOperation {
 
   get parameters() {
     return this.config.parameters.map((
-      parameter => new ApiBuilderParameter(parameter, this.service)
+      (parameter) => new ApiBuilderParameter(parameter, this.service)
     ));
   }
 
   get responses() {
-    return this.config.responses.map((response) => {
-      return new ApiBuilderResponse(response, this.service);
-    });
+    return this.config.responses.map((response) => new ApiBuilderResponse(response, this.service));
   }
 
   /**
@@ -948,15 +939,15 @@ export class ApiBuilderOperation {
    * Indicates whether to fallback to the default response object for all
    * HTTP codes that are not covered individually by the specification.
    */
-  getResponseByCode(responseCode: number, useDefault: boolean = false) {
-    const response = this.responses.find(response => response.code === responseCode);
+  getResponseByCode(responseCode: number, useDefault = false) {
+    const response = this.responses.find((_) => _.code === responseCode);
 
     if (response != null) {
       return response;
     }
 
     if (useDefault) {
-      return this.responses.find(response => response.isDefault);
+      return this.responses.find((_) => _.isDefault);
     }
 
     return undefined;
@@ -1003,6 +994,7 @@ export interface ApiBuilderParameterConfig {
 
 export class ApiBuilderParameter {
   private config: ApiBuilderParameterConfig;
+
   private service: ApiBuilderService;
 
   constructor(config: ApiBuilderParameterConfig, service: ApiBuilderService) {
@@ -1091,6 +1083,7 @@ export interface ApiBuilderResourceConfig {
 
 export class ApiBuilderResource {
   private config: ApiBuilderResourceConfig;
+
   private service: ApiBuilderService;
 
   constructor(config: ApiBuilderResourceConfig, service: ApiBuilderService) {
@@ -1100,7 +1093,7 @@ export class ApiBuilderResource {
 
   get operations() {
     return this.config.operations.map((
-      operation => new ApiBuilderOperation(operation, this, this.service)
+      (operation) => new ApiBuilderOperation(operation, this, this.service)
     ));
   }
 
@@ -1138,10 +1131,10 @@ export type ApiBuilderResponseCodeOption = 'Default';
  * @see https://app.apibuilder.io/bryzek/apidoc-spec/latest#union-response_code
  */
 export type ApiBuilderResponseCode = StrictUnion<
-  | { integer: PrimitiveUnionType<number>; }
-  | { response_code_option: ApiBuilderResponseCodeOption; }
-  | { discriminator: 'integer', value: number }
-  | { discriminator: 'response_code_option', value: ApiBuilderResponseCodeOption }
+| { integer: PrimitiveUnionType<number>; }
+| { response_code_option: ApiBuilderResponseCodeOption; }
+| { discriminator: 'integer', value: number }
+| { discriminator: 'response_code_option', value: ApiBuilderResponseCodeOption }
 >;
 
 /**
@@ -1158,6 +1151,7 @@ export interface ApiBuilderResponseConfig {
 
 export class ApiBuilderResponse {
   private config: ApiBuilderResponseConfig;
+
   private service: ApiBuilderService;
 
   constructor(config: ApiBuilderResponseConfig, service: ApiBuilderService) {
@@ -1266,11 +1260,11 @@ export class ApiBuilderService {
     return this.config.version;
   }
 
-  get description () {
+  get description() {
     return this.config.description;
   }
 
-  get info () {
+  get info() {
     return this.config.info;
   }
 
@@ -1283,25 +1277,25 @@ export class ApiBuilderService {
   }
 
   get imports() {
-    const imports = this.config.imports.map(config => new ApiBuilderImport(config, this));
+    const imports = this.config.imports.map((config) => new ApiBuilderImport(config, this));
     Object.defineProperty(this, 'imports', { value: imports });
     return imports;
   }
 
   get enums() {
-    const enums = this.config.enums.map(config => ApiBuilderEnum.fromConfig(config, this));
+    const enums = this.config.enums.map((config) => ApiBuilderEnum.fromConfig(config, this));
     Object.defineProperty(this, 'enums', { value: enums });
     return enums;
   }
 
   get models() {
-    const models = this.config.models.map(config => ApiBuilderModel.fromConfig(config, this));
+    const models = this.config.models.map((config) => ApiBuilderModel.fromConfig(config, this));
     Object.defineProperty(this, 'models', { value: models });
     return models;
   }
 
   get unions() {
-    const unions = this.config.unions.map(config => ApiBuilderUnion.fromConfig(config, this));
+    const unions = this.config.unions.map((config) => ApiBuilderUnion.fromConfig(config, this));
     Object.defineProperty(this, 'unions', { value: unions });
     return unions;
   }
@@ -1351,7 +1345,8 @@ export class ApiBuilderService {
   }
 
   get resources() {
-    const resources = this.config.resources.map(resource => new ApiBuilderResource(resource, this));
+    const resources = this.config.resources
+      .map((resource) => new ApiBuilderResource(resource, this));
     Object.defineProperty(this, 'resources', { value: resources });
     return resources;
   }
@@ -1375,15 +1370,10 @@ export class ApiBuilderService {
       return this.typesByShortName[typeName];
     }
 
-    const predicate = overSome([
-      matchesProperty('shortName', typeName),
-      matchesProperty('baseTypeName', typeName),
-    ]);
-
     return (
-      flatMap(this.imports, 'enums').find(predicate)
-      || flatMap(this.imports, 'models').find(predicate)
-      || flatMap(this.imports, 'unions').find(predicate)
+      findTypeByName(flatMap(this.imports, (_) => _.enums), typeName)
+      || findTypeByName(flatMap(this.imports, (_) => _.models), typeName)
+      || findTypeByName(flatMap(this.imports, (_) => _.unions), typeName)
     );
   }
 
@@ -1404,7 +1394,9 @@ export interface ApiBuilderUnionConfig {
 
 export class ApiBuilderUnion {
   private config: ApiBuilderUnionConfig;
+
   private fullyQualifiedName: FullyQualifiedName;
+
   private service: ApiBuilderService;
 
   /**
@@ -1427,14 +1419,14 @@ export class ApiBuilderUnion {
   ) {
     invariant(
       !fullyQualifiedName.isEnclosingType,
-      `${String(fullyQualifiedName)} is a collection type. ` +
-      'You cannot create an union from a collection type.',
+      `${String(fullyQualifiedName)} is a collection type. `
+      + 'You cannot create an union from a collection type.',
     );
 
     invariant(
       !fullyQualifiedName.isPrimitiveType,
-      `${String(fullyQualifiedName)} is a primitive type. ` +
-      'You cannot create an union from a primitive type.',
+      `${String(fullyQualifiedName)} is a primitive type. `
+      + 'You cannot create an union from a primitive type.',
     );
 
     this.config = config;
@@ -1479,9 +1471,7 @@ export class ApiBuilderUnion {
   }
 
   get types() {
-    return map(this.config.types, (
-      type => new ApiBuilderUnionType(type, this.service)
-    ));
+    return this.config.types.map((type) => new ApiBuilderUnionType(type, this.service));
   }
 
   get attributes() {
@@ -1512,6 +1502,7 @@ export interface ApiBuilderUnionTypeConfig {
  */
 export class ApiBuilderUnionType {
   private config: ApiBuilderUnionTypeConfig;
+
   private service: ApiBuilderService;
 
   constructor(config: ApiBuilderUnionTypeConfig, service: ApiBuilderService) {

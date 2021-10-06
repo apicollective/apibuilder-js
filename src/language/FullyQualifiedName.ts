@@ -1,21 +1,9 @@
+/* eslint-disable import/no-cycle */
+
 import invariant from 'invariant';
 import { AstNode, EnclosingTypeNode, astFromTypeName } from './ast';
 import { Regex } from './constants';
 import { isArrayTypeName, isMapTypeName, isPrimitiveTypeName } from './predicates';
-
-export function isFullyQualifiedName(identifier: string) {
-  return isPrimitiveTypeName(identifier) || getBaseTypeName(identifier).lastIndexOf('.') >= 0;
-}
-
-export function assertFullyQualifiedName(fullyQualifiedName: string) {
-  invariant(
-    isFullyQualifiedName(fullyQualifiedName),
-    `"${fullyQualifiedName}" is not a valid fully qualified name. `
-    + 'A fully qualified name may be the name of a primitive type, '
-    + 'or a string consisting of a package name followed by the base '
-    + 'short name. (e.g. "com.bryzek.apidoc.common.v0.models.reference").',
-  );
-}
 
 /**
  * API Builder types can be complex (e.g. array of strings, map of strings,
@@ -49,19 +37,33 @@ export function getBaseTypeName(type: string | AstNode): string {
  * //=> "[string]"
  */
 export function getNestedTypeName(type: string): string {
-  const mapMatch = type.match(Regex.OBJECTOF);
+  const mapMatch = Regex.OBJECTOF.exec(type);
   if (mapMatch) {
     const [, $1] = mapMatch;
     return $1;
   }
 
-  const arrayMatch = type.match(Regex.ARRAYOF);
+  const arrayMatch = Regex.ARRAYOF.exec(type);
   if (arrayMatch) {
     const [, $1] = arrayMatch;
     return $1;
   }
 
   return type;
+}
+
+export function isFullyQualifiedName(identifier: string): boolean {
+  return isPrimitiveTypeName(identifier) || getBaseTypeName(identifier).lastIndexOf('.') >= 0;
+}
+
+export function assertFullyQualifiedName(fullyQualifiedName: string): void {
+  invariant(
+    isFullyQualifiedName(fullyQualifiedName),
+    `"${fullyQualifiedName}" is not a valid fully qualified name. `
+    + 'A fully qualified name may be the name of a primitive type, '
+    + 'or a string consisting of a package name followed by the base '
+    + 'short name. (e.g. "com.bryzek.apidoc.common.v0.models.reference").',
+  );
 }
 
 export class FullyQualifiedName {
