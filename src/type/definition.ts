@@ -798,6 +798,10 @@ export class ApiBuilderModel {
     return this.config.fields.map((field) => new ApiBuilderField(field, this.service));
   }
 
+  get attributes(): ReadonlyArray<ApiBuilderAttributeConfig> {
+    return this.config.attributes;
+  }
+
   /**
    * Returns whether the specified type is the same as this model type.
    */

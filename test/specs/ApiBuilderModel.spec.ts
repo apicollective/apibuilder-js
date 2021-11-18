@@ -16,4 +16,9 @@ describe('ApiBuilderModel', () => {
     const model = ApiBuilderModel.fromConfig(models.application, service);
     expect(model).toHaveProperty('packageName', 'com.bryzek.apidoc.api.v0.models');
   });
+
+  test('should have property with attributes', () => {
+    const model = ApiBuilderModel.fromConfig(models.application, service);
+    expect(model).toHaveProperty('attributes', []);
+  });
 });
