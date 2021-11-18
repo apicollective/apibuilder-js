@@ -91,14 +91,14 @@ export class FullyQualifiedName {
    * This property holds the fully qualified name of the type,
    * including its namespace.
    */
-  get fullName() {
+  get fullName(): string {
     return this.fullyQualifiedName;
   }
 
   /**
    * This property holds the base name of the type.
    */
-  get baseTypeName() {
+  get baseTypeName(): string {
     return getBaseTypeName(this.fullyQualifiedName);
   }
 
@@ -108,7 +108,7 @@ export class FullyQualifiedName {
    * Only array or map types can enclose another type, which may be any of the
    * supported API builder types, including another array or map.
    */
-  get nestedTypeName() {
+  get nestedTypeName(): string {
     return getNestedTypeName(this.fullyQualifiedName);
   }
 
@@ -116,7 +116,7 @@ export class FullyQualifiedName {
    * This property holds the base short name, that is the type name
    * without its package name.
    */
-  get shortName() {
+  get shortName(): string {
     const lastIndex = this.baseTypeName.lastIndexOf('.');
 
     if (lastIndex === -1) {
@@ -129,7 +129,7 @@ export class FullyQualifiedName {
   /**
    * This property holds the package name.
    */
-  get packageName() {
+  get packageName(): string {
     const lastIndex = this.baseTypeName.lastIndexOf('.');
 
     if (this.isPrimitiveType || lastIndex === -1) {
@@ -142,14 +142,14 @@ export class FullyQualifiedName {
   /**
    * This property holds whether this is an array.
    */
-  get isArrayType() {
+  get isArrayType(): boolean {
     return isArrayTypeName(this.fullyQualifiedName);
   }
 
   /**
    * This property holds whether this is a map.
    */
-  get isMapType() {
+  get isMapType(): boolean {
     return isMapTypeName(this.fullyQualifiedName);
   }
 
@@ -159,18 +159,18 @@ export class FullyQualifiedName {
    * Only array or map types can enclose another type, which may be one of the
    * supported API builder types, including another array or map.
    */
-  get isEnclosingType() {
+  get isEnclosingType(): boolean {
     return this.isArrayType || this.isMapType;
   }
 
   /**
    * This property holds whether this is a primitive type.
    */
-  get isPrimitiveType() {
+  get isPrimitiveType(): boolean {
     return isPrimitiveTypeName(this.fullName);
   }
 
-  public toString() {
+  public toString(): string {
     return this.fullyQualifiedName;
   }
 }

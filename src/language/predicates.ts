@@ -14,7 +14,7 @@ import { getBaseTypeName } from './FullyQualifiedName';
  * isArrayTypeName("string");
  * //=> false
  */
-export function isArrayTypeName(type: string) {
+export function isArrayTypeName(type: string): boolean {
   return Regex.ARRAYOF.test(type);
 }
 
@@ -27,7 +27,7 @@ export function isArrayTypeName(type: string) {
  * isMapTypeName("string");
  * //=> false
  */
-export function isMapTypeName(type: string) {
+export function isMapTypeName(type: string): boolean {
   return Regex.OBJECTOF.test(type);
 }
 

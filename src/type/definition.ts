@@ -52,7 +52,7 @@ export class ApiBuilderArray {
     this.ofType = ofType;
   }
 
-  public toString() {
+  public toString(): string {
     return `[${String(this.ofType)}]`;
   }
 }
@@ -97,15 +97,15 @@ export class ApiBuilderBody {
     this.service = service;
   }
 
-  get type() {
+  get type(): ApiBuilderType {
     return typeFromAst(astFromTypeName(this.config.type), this.service);
   }
 
-  get description() {
+  get description(): string | undefined {
     return this.config.description;
   }
 
-  get isDeprecated() {
+  get isDeprecated(): boolean {
     return this.config.deprecation != null;
   }
 }
@@ -155,7 +155,7 @@ export class ApiBuilderEnum {
     config: ApiBuilderEnumConfig,
     service: ApiBuilderService,
     namespace: string = service.namespace,
-  ) {
+  ): ApiBuilderEnum {
     const fullyQualifiedName = new FullyQualifiedName(`${namespace}.enums.${config.name}`);
     return new ApiBuilderEnum(fullyQualifiedName, config, service);
   }
@@ -182,23 +182,23 @@ export class ApiBuilderEnum {
     this.service = service;
   }
 
-  get fullName() {
+  get fullName(): string {
     return this.fullyQualifiedName.fullName;
   }
 
-  get baseTypeName() {
+  get baseTypeName(): string {
     return this.fullyQualifiedName.baseTypeName;
   }
 
-  get shortName() {
+  get shortName(): string {
     return this.fullyQualifiedName.shortName;
   }
 
-  get packageName() {
+  get packageName(): string {
     return this.fullyQualifiedName.packageName;
   }
 
-  get name() {
+  get name(): string {
     return this.config.name;
   }
 
@@ -206,31 +206,31 @@ export class ApiBuilderEnum {
    * A string used to identify this enumeration. Useful for naming the variable
    * corresponding to this enumeration in code generators.
    */
-  get nickname() {
+  get nickname(): string {
     return pascalCase(this.name);
   }
 
-  get plural() {
+  get plural(): string {
     return this.config.plural;
   }
 
-  get description() {
+  get description(): string | undefined {
     return this.config.description;
   }
 
-  get values() {
+  get values(): ApiBuilderEnumValue[] {
     return this.config.values.map((value) => new ApiBuilderEnumValue(value));
   }
 
-  get attributes() {
+  get attributes(): ReadonlyArray<ApiBuilderAttributeConfig> {
     return this.config.attributes;
   }
 
-  get isDeprecated() {
+  get isDeprecated(): boolean {
     return this.config.deprecation != null;
   }
 
-  get deprecationReason() {
+  get deprecationReason(): string | undefined {
     if (this.config.deprecation != null) {
       return this.config.deprecation.description;
     }
@@ -250,7 +250,7 @@ export class ApiBuilderEnum {
    * Returns name for the type discriminator field when this type is present
    * as a union type for one or more unions.
    */
-  get discriminator() {
+  get discriminator(): string | undefined {
     const discriminators = this.unions
       .map((union) => union.discriminator)
       .filter((discriminator, index, self) => self.indexOf(discriminator) === index);
@@ -266,7 +266,7 @@ export class ApiBuilderEnum {
    * Returns the string to use in the discriminator field to identify this type
    * when present as a union type for one more unions.
    */
-  get discriminatorValue() {
+  get discriminatorValue(): string | undefined {
     const discriminatorValues = this.unions
       .reduce<string[]>(
       (self, union) => self.concat(
@@ -289,7 +289,7 @@ export class ApiBuilderEnum {
     return isEnumType(type) && type.fullName === this.fullName;
   }
 
-  public toString() {
+  public toString(): string {
     return this.fullName;
   }
 }
@@ -316,7 +316,7 @@ export class ApiBuilderEnumValue {
   /**
    * This property holds the name of the enum value.
    */
-  get name() {
+  get name(): string {
     return this.config.name;
   }
 
@@ -324,7 +324,7 @@ export class ApiBuilderEnumValue {
    * A string used to identify this enumeration value. Useful for naming the
    * variable corresponding to this enumeration value in code generators.
    */
-  get nickname() {
+  get nickname(): string {
     return constantCase(this.name);
   }
 
@@ -332,21 +332,21 @@ export class ApiBuilderEnumValue {
    * This property holds an optional description for what
    * this enum value provides.
    */
-  get description() {
+  get description(): string | undefined {
     return this.config.description;
   }
 
   /**
    * This property holds additional meta data about enum value.
    */
-  get attributes() {
-    return this.config.attributes;
+  get attributes(): ReadonlyArray<ApiBuilderAttributeConfig> {
+    return this.config.attributes != null ? this.config.attributes : [];
   }
 
   /**
    * This property holds whether this enum value is deprecated.
    */
-  get isDeprecated() {
+  get isDeprecated(): boolean {
     return this.config.deprecation != null;
   }
 
@@ -354,7 +354,7 @@ export class ApiBuilderEnumValue {
    * This property holds an optional message indicating the reason this
    * enum value is deprecated.
    */
-  get deprecationReason() {
+  get deprecationReason(): string | undefined {
     if (this.config.deprecation != null) {
       return this.config.deprecation.description;
     }
@@ -362,7 +362,7 @@ export class ApiBuilderEnumValue {
     return undefined;
   }
 
-  public toString() {
+  public toString(): string {
     return this.name;
   }
 }
@@ -391,47 +391,47 @@ export class ApiBuilderField {
     this.service = service;
   }
 
-  get name() {
+  get name(): string {
     return this.config.name;
   }
 
-  get type() {
+  get type(): ApiBuilderType {
     return typeFromAst(astFromTypeName(this.config.type), this.service);
   }
 
-  get description() {
+  get description(): string | undefined {
     return this.config.description;
   }
 
-  get isRequired() {
+  get isRequired(): boolean {
     return this.config.required;
   }
 
-  get default() {
+  get default(): string | undefined {
     return this.config.default;
   }
 
-  get example() {
+  get example(): string | undefined {
     return this.config.example;
   }
 
-  get minimum() {
+  get minimum(): number | undefined {
     return this.config.minimum;
   }
 
-  get maximum() {
+  get maximum(): number | undefined {
     return this.config.maximum;
   }
 
-  get attributes() {
+  get attributes(): ReadonlyArray<ApiBuilderAttributeConfig> {
     return this.config.attributes;
   }
 
-  get isDeprecated() {
+  get isDeprecated(): boolean {
     return this.config.deprecation != null;
   }
 
-  get deprecationReason() {
+  get deprecationReason(): string | undefined {
     if (this.config.deprecation != null) {
       return this.config.deprecation.description;
     }
@@ -439,7 +439,7 @@ export class ApiBuilderField {
     return undefined;
   }
 
-  public toString() {
+  public toString(): string {
     return this.name;
   }
 }
@@ -520,27 +520,27 @@ export class ApiBuilderImport {
     this.service = service;
   }
 
-  get annotations() {
+  get annotations(): ApiBuilderAnnotationConfig[] | undefined {
     return this.config.annotations;
   }
 
-  get namespace() {
+  get namespace(): string {
     return this.config.namespace;
   }
 
-  get organizationKey() {
+  get organizationKey(): string {
     return this.config.organization.key;
   }
 
-  get applicationKey() {
+  get applicationKey(): string {
     return this.config.application.key;
   }
 
-  get version() {
+  get version(): string {
     return this.config.version;
   }
 
-  get enums() {
+  get enums(): ApiBuilderEnum[] {
     const enums = this.config.enums.map((enumeration) => {
       const config: ApiBuilderEnumConfig = {
         name: enumeration,
@@ -554,7 +554,7 @@ export class ApiBuilderImport {
     return enums;
   }
 
-  get models() {
+  get models(): ApiBuilderModel[] {
     const models = this.config.models.map((model) => {
       const config: ApiBuilderModelConfig = {
         name: model,
@@ -568,7 +568,7 @@ export class ApiBuilderImport {
     return models;
   }
 
-  get unions() {
+  get unions(): ApiBuilderUnion[] {
     const unions = this.config.unions.map((union) => {
       const config: ApiBuilderUnionConfig = {
         name: union,
@@ -582,19 +582,19 @@ export class ApiBuilderImport {
     return unions;
   }
 
-  public findEnumByName(name: string) {
+  public findEnumByName(name: string): ApiBuilderEnum | undefined {
     return findTypeByName(this.enums, name);
   }
 
-  public findModelByName(name: string) {
+  public findModelByName(name: string): ApiBuilderModel | undefined {
     return findTypeByName(this.models, name);
   }
 
-  public findUnionByName(name: string) {
+  public findUnionByName(name: string): ApiBuilderUnion | undefined {
     return findTypeByName(this.unions, name);
   }
 
-  public toString() {
+  public toString(): string {
     return `${this.applicationKey}@${this.version}`;
   }
 }
@@ -627,21 +627,21 @@ export class ApiBuilderInvocationForm {
     this.config = config;
   }
 
-  get attributes() {
+  get attributes(): ReadonlyArray<ApiBuilderGeneratorAttributes> {
     return this.config.attributes;
   }
 
-  get service() {
+  get service(): ApiBuilderService {
     return new ApiBuilderService(this.config.service);
   }
 
-  get importedServices() {
+  get importedServices(): ApiBuilderService[] {
     return (this.config.imported_services || []).map((importedService) => (
       new ApiBuilderService(importedService)
     ));
   }
 
-  get userAgent() {
+  get userAgent(): string | undefined {
     return this.config.user_agent;
   }
 }
@@ -667,7 +667,7 @@ export class ApiBuilderMap {
     this.ofType = ofType;
   }
 
-  public toString() {
+  public toString(): string {
     return `map[${String(this.ofType)}]`;
   }
 }
@@ -696,7 +696,7 @@ export class ApiBuilderModel {
     config: ApiBuilderModelConfig,
     service: ApiBuilderService,
     namespace: string = service.namespace,
-  ) {
+  ): ApiBuilderModel {
     const fullyQualifiedName = new FullyQualifiedName(`${namespace}.models.${config.name}`);
     return new ApiBuilderModel(fullyQualifiedName, config, service);
   }
@@ -723,23 +723,23 @@ export class ApiBuilderModel {
     this.service = service;
   }
 
-  get fullName() {
+  get fullName(): string {
     return this.fullyQualifiedName.fullName;
   }
 
-  get baseTypeName() {
+  get baseTypeName(): string {
     return this.fullyQualifiedName.baseTypeName;
   }
 
-  get shortName() {
+  get shortName(): string {
     return this.fullyQualifiedName.shortName;
   }
 
-  get packageName() {
+  get packageName(): string {
     return this.fullyQualifiedName.packageName;
   }
 
-  get isDeprecated() {
+  get isDeprecated(): boolean {
     return this.config.deprecation != null;
   }
 
@@ -755,7 +755,7 @@ export class ApiBuilderModel {
    * Returns name for the type discriminator field when this type is present
    * as a union type for one or more unions.
    */
-  get discriminator() {
+  get discriminator(): string | undefined {
     const discriminators = this.unions
       .map((union) => union.discriminator)
       .filter((discriminator, index, self) => self.indexOf(discriminator) === index);
@@ -771,7 +771,7 @@ export class ApiBuilderModel {
    * Returns the string to use in the discriminator field to identify this type
    * when present as a union type for one more unions.
    */
-  get discriminatorValue() {
+  get discriminatorValue(): string | undefined {
     const discriminatorValues = this.unions
       .reduce<string[]>(
       (self, union) => self.concat(
@@ -790,11 +790,11 @@ export class ApiBuilderModel {
     return discriminatorValues.length ? discriminatorValues[0] : undefined;
   }
 
-  get description() {
+  get description(): string | undefined {
     return this.config.description;
   }
 
-  get fields() {
+  get fields(): ApiBuilderField[] {
     return this.config.fields.map((field) => new ApiBuilderField(field, this.service));
   }
 
@@ -805,7 +805,7 @@ export class ApiBuilderModel {
     return isModelType(type) && type.fullName === this.fullName;
   }
 
-  public toString() {
+  public toString(): string {
     return this.fullName;
   }
 }
@@ -852,7 +852,7 @@ export class ApiBuilderOperation {
     this.resource = resource;
   }
 
-  get body() {
+  get body(): ApiBuilderBody | undefined {
     if (this.config.body != null) {
       return new ApiBuilderBody(this.config.body, this.service);
     }
@@ -860,15 +860,15 @@ export class ApiBuilderOperation {
     return undefined;
   }
 
-  get method() {
+  get method(): ApiBuilderMethod {
     return this.config.method;
   }
 
-  get isDeprecated() {
+  get isDeprecated(): boolean {
     return this.config.deprecation != null;
   }
 
-  get deprecationReason() {
+  get deprecationReason(): string | undefined {
     if (this.config.deprecation != null) {
       return this.config.deprecation.description;
     }
@@ -876,7 +876,7 @@ export class ApiBuilderOperation {
     return undefined;
   }
 
-  get description() {
+  get description(): string | undefined {
     return this.config.description;
   }
 
@@ -884,7 +884,7 @@ export class ApiBuilderOperation {
    * A string used to identify this operation. Useful for naming the method
    * corresponding to this operation in code generators.
    */
-  get nickname() {
+  get nickname(): string {
     let { path } = this.config;
 
     if (this.resource.path != null) {
@@ -910,7 +910,7 @@ export class ApiBuilderOperation {
     return this.method.toLowerCase() + staticParts.concat(dynamicParts).join('');
   }
 
-  get url() {
+  get url(): string {
     if (this.service.baseUrl != null) {
       return `${this.service.baseUrl}${this.config.path}`;
     }
@@ -918,17 +918,17 @@ export class ApiBuilderOperation {
     return this.config.path;
   }
 
-  get path() {
+  get path(): string {
     return this.config.path;
   }
 
-  get parameters() {
+  get parameters(): ApiBuilderParameter[] {
     return this.config.parameters.map((
       (parameter) => new ApiBuilderParameter(parameter, this.service)
     ));
   }
 
-  get responses() {
+  get responses(): ApiBuilderResponse[] {
     return this.config.responses.map((response) => new ApiBuilderResponse(response, this.service));
   }
 
@@ -939,7 +939,7 @@ export class ApiBuilderOperation {
    * Indicates whether to fallback to the default response object for all
    * HTTP codes that are not covered individually by the specification.
    */
-  getResponseByCode(responseCode: number, useDefault = false) {
+  getResponseByCode(responseCode: number, useDefault = false): ApiBuilderResponse | undefined {
     const response = this.responses.find((_) => _.code === responseCode);
 
     if (response != null) {
@@ -960,7 +960,7 @@ export class ApiBuilderOperation {
    * Indicates whether to fallback to the default response object for all
    * HTTP codes that are not covered individually by the specification.
    */
-  getResponseTypeByCode(responseCode: number, useDefault?: boolean) {
+  getResponseTypeByCode(responseCode: number, useDefault?: boolean): ApiBuilderType | undefined {
     const response = this.getResponseByCode(responseCode, useDefault);
     return response != null ? response.type : undefined;
   }
@@ -1002,31 +1002,31 @@ export class ApiBuilderParameter {
     this.service = service;
   }
 
-  get name() {
+  get name(): string {
     return this.config.name;
   }
 
-  get type() {
+  get type(): ApiBuilderType {
     return typeFromAst(astFromTypeName(this.config.type), this.service);
   }
 
-  get defaultValue() {
+  get defaultValue(): string | undefined {
     return this.config.default;
   }
 
-  get deprecation() {
+  get deprecation(): ApiBuilderDeprecationConfig | undefined {
     return this.config.deprecation;
   }
 
-  get description() {
+  get description(): string | undefined {
     return this.config.description;
   }
 
-  get location() {
+  get location(): ApiBuilderParameterLocation {
     return this.config.location;
   }
 
-  get isRequired() {
+  get isRequired(): boolean {
     return this.config.required;
   }
 }
@@ -1043,27 +1043,27 @@ export class ApiBuilderPrimitiveType {
     this.fullyQualifiedName = fullyQualifiedName;
   }
 
-  get fullName() {
+  get fullName(): string {
     return this.fullyQualifiedName.fullName;
   }
 
-  get baseTypeName() {
+  get baseTypeName(): string {
     return this.fullyQualifiedName.baseTypeName;
   }
 
-  get shortName() {
+  get shortName(): string {
     return this.fullyQualifiedName.shortName;
   }
 
-  get packageName() {
+  get packageName(): string {
     return this.fullyQualifiedName.packageName;
   }
 
-  get typeName() {
+  get typeName(): string {
     return this.fullyQualifiedName.fullName;
   }
 
-  public toString() {
+  public toString(): string {
     return this.baseTypeName;
   }
 }
@@ -1091,29 +1091,29 @@ export class ApiBuilderResource {
     this.service = service;
   }
 
-  get operations() {
+  get operations(): ApiBuilderOperation[] {
     return this.config.operations.map((
       (operation) => new ApiBuilderOperation(operation, this, this.service)
     ));
   }
 
-  get type() {
+  get type(): ApiBuilderType {
     return typeFromAst(astFromTypeName(this.config.type), this.service);
   }
 
-  get typeName() {
+  get typeName(): string {
     return this.config.type;
   }
 
-  get plural() {
+  get plural(): string {
     return this.config.plural;
   }
 
-  get namespace() {
+  get namespace(): string {
     return this.service.namespace;
   }
 
-  get path() {
+  get path(): string | undefined {
     return this.config.path;
   }
 }
@@ -1159,7 +1159,7 @@ export class ApiBuilderResponse {
     this.service = service;
   }
 
-  get code() {
+  get code(): number | undefined {
     if (this.config.code.integer != null) {
       return this.config.code.integer.value;
     }
@@ -1175,7 +1175,7 @@ export class ApiBuilderResponse {
    * Indicates this is the default response object for all HTTP codes that are
    * not covered individually by the specification.
    */
-  get isDefault() {
+  get isDefault(): boolean {
     if (this.config.code.response_code_option != null) {
       return this.config.code.response_code_option === 'Default';
     }
@@ -1187,24 +1187,24 @@ export class ApiBuilderResponse {
     return false;
   }
 
-  get type() {
+  get type(): ApiBuilderType {
     const typeName = this.config.type != null ? this.config.type : 'unit';
     return typeFromAst(astFromTypeName(typeName), this.service);
   }
 
-  get headers() {
-    return this.config.headers;
+  get headers(): ReadonlyArray<ApiBuilderHeaderConfig> {
+    return this.config.headers != null ? this.config.headers : [];
   }
 
-  get description() {
+  get description(): string | undefined {
     return this.config.description;
   }
 
-  get isDeprecated() {
+  get isDeprecated(): boolean {
     return this.config.deprecation != null;
   }
 
-  get deprecationReason() {
+  get deprecationReason(): string | undefined {
     if (this.config.deprecation != null) {
       return this.config.deprecation.description;
     }
@@ -1212,8 +1212,8 @@ export class ApiBuilderResponse {
     return undefined;
   }
 
-  get attributes() {
-    return this.config.attributes;
+  get attributes(): ReadonlyArray<ApiBuilderAttributeConfig> {
+    return this.config.attributes != null ? this.config.attributes : [];
   }
 }
 
@@ -1248,59 +1248,59 @@ export class ApiBuilderService {
     this.config = config;
   }
 
-  get name() {
+  get name(): string {
     return this.config.name;
   }
 
-  get namespace() {
+  get namespace(): string {
     return this.config.namespace;
   }
 
-  get version() {
+  get version(): string {
     return this.config.version;
   }
 
-  get description() {
+  get description(): string | undefined {
     return this.config.description;
   }
 
-  get info() {
+  get info(): ApiBuilderInfoConfig {
     return this.config.info;
   }
 
-  get applicationKey() {
+  get applicationKey(): string {
     return this.config.application.key;
   }
 
-  get organizationKey() {
+  get organizationKey(): string {
     return this.config.organization.key;
   }
 
-  get imports() {
+  get imports(): ApiBuilderImport[] {
     const imports = this.config.imports.map((config) => new ApiBuilderImport(config, this));
     Object.defineProperty(this, 'imports', { value: imports });
     return imports;
   }
 
-  get enums() {
+  get enums(): ApiBuilderEnum[] {
     const enums = this.config.enums.map((config) => ApiBuilderEnum.fromConfig(config, this));
     Object.defineProperty(this, 'enums', { value: enums });
     return enums;
   }
 
-  get models() {
+  get models(): ApiBuilderModel[] {
     const models = this.config.models.map((config) => ApiBuilderModel.fromConfig(config, this));
     Object.defineProperty(this, 'models', { value: models });
     return models;
   }
 
-  get unions() {
+  get unions(): ApiBuilderUnion[] {
     const unions = this.config.unions.map((config) => ApiBuilderUnion.fromConfig(config, this));
     Object.defineProperty(this, 'unions', { value: unions });
     return unions;
   }
 
-  get typesByFullName() {
+  get typesByFullName(): Record<string, ApiBuilderEnum | ApiBuilderModel | ApiBuilderUnion> {
     const typesByFullName: Record<string, ApiBuilderEnum | ApiBuilderModel | ApiBuilderUnion> = {};
 
     this.enums.forEach((enumeration) => {
@@ -1322,7 +1322,7 @@ export class ApiBuilderService {
     return typesByFullName;
   }
 
-  get typesByShortName() {
+  get typesByShortName(): Record<string, ApiBuilderEnum | ApiBuilderModel | ApiBuilderUnion> {
     const typesByShortName: Record<string, ApiBuilderEnum | ApiBuilderModel | ApiBuilderUnion> = {};
 
     this.enums.forEach((enumeration) => {
@@ -1344,14 +1344,14 @@ export class ApiBuilderService {
     return typesByShortName;
   }
 
-  get resources() {
+  get resources(): ApiBuilderResource[] {
     const resources = this.config.resources
       .map((resource) => new ApiBuilderResource(resource, this));
     Object.defineProperty(this, 'resources', { value: resources });
     return resources;
   }
 
-  get baseUrl() {
+  get baseUrl(): string | undefined {
     return this.config.base_url;
   }
 
@@ -1377,7 +1377,7 @@ export class ApiBuilderService {
     );
   }
 
-  public toString() {
+  public toString(): string {
     return `${this.applicationKey}@${this.version}`;
   }
 }
@@ -1407,7 +1407,7 @@ export class ApiBuilderUnion {
     config: ApiBuilderUnionConfig,
     service: ApiBuilderService,
     namespace = service.namespace,
-  ) {
+  ): ApiBuilderUnion {
     const fullyQualifiedName = new FullyQualifiedName(`${namespace}.unions.${config.name}`);
     return new ApiBuilderUnion(fullyQualifiedName, config, service);
   }
@@ -1434,51 +1434,51 @@ export class ApiBuilderUnion {
     this.service = service;
   }
 
-  get fullName() {
+  get fullName(): string {
     return this.fullyQualifiedName.fullName;
   }
 
-  get baseTypeName() {
+  get baseTypeName(): string {
     return this.fullyQualifiedName.baseTypeName;
   }
 
-  get shortName() {
+  get shortName(): string {
     return this.fullyQualifiedName.shortName;
   }
 
-  get packageName() {
+  get packageName(): string {
     return this.fullyQualifiedName.packageName;
   }
 
-  get name() {
+  get name(): string {
     return this.config.name;
   }
 
-  get plural() {
+  get plural(): string {
     return this.config.plural;
   }
 
-  get discriminator() {
+  get discriminator(): string {
     return this.config.discriminator || 'discriminator';
   }
 
-  get description() {
+  get description(): string | undefined {
     return this.config.description;
   }
 
-  get deprecation() {
+  get deprecation(): ApiBuilderDeprecationConfig | undefined {
     return this.config.deprecation;
   }
 
-  get types() {
+  get types(): ApiBuilderUnionType[] {
     return this.config.types.map((type) => new ApiBuilderUnionType(type, this.service));
   }
 
-  get attributes() {
+  get attributes(): ReadonlyArray<ApiBuilderAttributeConfig> {
     return this.config.attributes;
   }
 
-  public toString() {
+  public toString(): string {
     return this.fullName;
   }
 }
@@ -1510,35 +1510,35 @@ export class ApiBuilderUnionType {
     this.service = service;
   }
 
-  get type() {
+  get type(): ApiBuilderType {
     return typeFromAst(astFromTypeName(this.config.type), this.service);
   }
 
-  get typeName() {
+  get typeName(): string {
     return this.config.type;
   }
 
-  get description() {
+  get description(): string | undefined {
     return this.config.description;
   }
 
-  get deprecation() {
+  get deprecation(): ApiBuilderDeprecationConfig | undefined {
     return this.config.deprecation;
   }
 
-  get attributes() {
+  get attributes(): ReadonlyArray<ApiBuilderAttributeConfig> {
     return this.config.attributes;
   }
 
-  get default() {
-    return this.config.default;
+  get default(): boolean {
+    return this.config.default != null ? this.config.default : false;
   }
 
-  get discriminatorValue() {
+  get discriminatorValue(): string {
     return this.config.discriminator_value || this.config.type;
   }
 
-  public toString() {
+  public toString(): string {
     return this.config.type;
   }
 }
