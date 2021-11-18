@@ -26,6 +26,14 @@ type StrictUnionHelper<T, A> = T extends unknown
 
 type StrictUnion<T> = Compute<StrictUnionHelper<T, T>>;
 
+type JSONValue =
+ | string
+ | number
+ | boolean
+ | null
+ | JSONValue[]
+ | { [key: string]: JSONValue };
+
 export interface ApiBuilderAnnotationConfig {
   readonly name: string;
   readonly description?: string;
@@ -69,7 +77,7 @@ export class ApiBuilderArray {
  */
 export interface ApiBuilderAttributeConfig {
   readonly name: string;
-  readonly value: Record<string, string>;
+  readonly value: JSONValue;
   readonly description?: string;
   readonly deprecation?: ApiBuilderDeprecationConfig;
 }
