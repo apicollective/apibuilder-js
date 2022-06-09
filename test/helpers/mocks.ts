@@ -24,6 +24,7 @@ export function createMockEnumValue(
     description: config.description,
     deprecation: config.deprecation,
     attributes: defaultTo(config.attributes, []),
+    value: config.value,
   };
 }
 
