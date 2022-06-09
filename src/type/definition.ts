@@ -329,6 +329,13 @@ export class ApiBuilderEnumValue {
   }
 
   /**
+   * This property holds the optional value of the enum value.
+   */
+  get value(): string | undefined {
+    return this.config.value;
+  }
+
+  /**
    * A string used to identify this enumeration value. Useful for naming the
    * variable corresponding to this enumeration value in code generators.
    */
