@@ -15,6 +15,18 @@ describe('ApiBuilderEnumValue', () => {
     expect(instance).toHaveProperty('deprecation', config.deprecation);
   });
 
+  test('should return value when set', () => {
+    const config = createMockEnumValue({ name: 'no_remaining_balance', value: 'NO_REMAINING_BALANCE' });
+    const instance = new ApiBuilderEnumValue(config);
+    expect(instance).toHaveProperty('value', 'NO_REMAINING_BALANCE');
+  });
+
+  test('should return name when value is not set', () => {
+    const config = createMockEnumValue({ name: 'no_remaining_balance' });
+    const instance = new ApiBuilderEnumValue(config);
+    expect(instance).toHaveProperty('value', 'no_remaining_balance');
+  });
+
   test('should have constant case nickname', () => {
     const config = createMockEnumValue({ name: 'no_remaining_balance' });
     const instance = new ApiBuilderEnumValue(config);
