@@ -871,6 +871,10 @@ export class ApiBuilderOperation {
     this.resource = resource;
   }
 
+  get attributes(): ReadonlyArray<ApiBuilderAttributeConfig> {
+    return this.config.attributes;
+  }
+
   get body(): ApiBuilderBody | undefined {
     if (this.config.body != null) {
       return new ApiBuilderBody(this.config.body, this.service);
