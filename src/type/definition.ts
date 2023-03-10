@@ -31,8 +31,8 @@ type JSONValue =
  | number
  | boolean
  | null
- | JSONValue[]
- | { [key: string]: JSONValue };
+ | readonly JSONValue[]
+ | { readonly [key: string]: JSONValue };
 
 export interface ApiBuilderAnnotationConfig {
   readonly name: string;
@@ -226,7 +226,7 @@ export class ApiBuilderEnum {
     return this.config.description;
   }
 
-  get values(): ApiBuilderEnumValue[] {
+  get values(): readonly ApiBuilderEnumValue[] {
     return this.config.values.map((value) => new ApiBuilderEnumValue(value));
   }
 
@@ -276,7 +276,7 @@ export class ApiBuilderEnum {
    */
   get discriminatorValue(): string | undefined {
     const discriminatorValues = this.unions
-      .reduce<string[]>(
+      .reduce<readonly string[]>(
       (self, union) => self.concat(
         union.types
           .filter((unionType) => this.isSame(unionType.type))
@@ -519,10 +519,10 @@ export interface ApiBuilderImportConfig {
   readonly organization: ApiBuilderOrganizationConfig;
   readonly application: ApiBuilderApplicationConfig;
   readonly version: string;
-  readonly enums: string[];
-  readonly unions: string[];
-  readonly models: string[];
-  readonly annotations?: ApiBuilderAnnotationConfig[];
+  readonly enums: readonly string[];
+  readonly unions: readonly string[];
+  readonly models: readonly string[];
+  readonly annotations?: readonly ApiBuilderAnnotationConfig[];
 }
 
 export class ApiBuilderImport {
@@ -535,7 +535,7 @@ export class ApiBuilderImport {
     this.service = service;
   }
 
-  get annotations(): ApiBuilderAnnotationConfig[] | undefined {
+  get annotations(): readonly ApiBuilderAnnotationConfig[] | undefined {
     return this.config.annotations;
   }
 
@@ -555,7 +555,7 @@ export class ApiBuilderImport {
     return this.config.version;
   }
 
-  get enums(): ApiBuilderEnum[] {
+  get enums(): readonly ApiBuilderEnum[] {
     const enums = this.config.enums.map((enumeration) => {
       const config: ApiBuilderEnumConfig = {
         name: enumeration,
@@ -569,7 +569,7 @@ export class ApiBuilderImport {
     return enums;
   }
 
-  get models(): ApiBuilderModel[] {
+  get models(): readonly ApiBuilderModel[] {
     const models = this.config.models.map((model) => {
       const config: ApiBuilderModelConfig = {
         name: model,
@@ -583,7 +583,7 @@ export class ApiBuilderImport {
     return models;
   }
 
-  get unions(): ApiBuilderUnion[] {
+  get unions(): readonly ApiBuilderUnion[] {
     const unions = this.config.unions.map((union) => {
       const config: ApiBuilderUnionConfig = {
         name: union,
@@ -630,9 +630,9 @@ interface ApiBuilderGeneratorAttributes {
 
 export interface ApiBuilderInvocationFormConfig {
   service: ApiBuilderServiceConfig;
-  attributes: ApiBuilderGeneratorAttributes[];
+  attributes: readonly ApiBuilderGeneratorAttributes[];
   user_agent?: string;
-  imported_services?: ApiBuilderServiceConfig[];
+  imported_services?: readonly ApiBuilderServiceConfig[];
 }
 
 export class ApiBuilderInvocationForm {
@@ -650,7 +650,7 @@ export class ApiBuilderInvocationForm {
     return new ApiBuilderService(this.config.service);
   }
 
-  get importedServices(): ApiBuilderService[] {
+  get importedServices(): readonly ApiBuilderService[] {
     return (this.config.imported_services || []).map((importedService) => (
       new ApiBuilderService(importedService)
     ));
@@ -761,7 +761,7 @@ export class ApiBuilderModel {
   /**
    * Returns a list of unions where this type is present as a union type.
    */
-  get unions(): ApiBuilderUnion[] {
+  get unions(): readonly ApiBuilderUnion[] {
     return this.service.unions
       .filter((union) => union.types.some((unionType) => this.isSame(unionType.type)));
   }
@@ -788,7 +788,7 @@ export class ApiBuilderModel {
    */
   get discriminatorValue(): string | undefined {
     const discriminatorValues = this.unions
-      .reduce<string[]>(
+      .reduce<readonly string[]>(
       (self, union) => self.concat(
         union.types
           .filter((unionType) => this.isSame(unionType.type))
@@ -809,7 +809,7 @@ export class ApiBuilderModel {
     return this.config.description;
   }
 
-  get fields(): ApiBuilderField[] {
+  get fields(): readonly ApiBuilderField[] {
     return this.config.fields.map((field) => new ApiBuilderField(field, this.service));
   }
 
@@ -869,6 +869,10 @@ export class ApiBuilderOperation {
     this.config = config;
     this.service = service;
     this.resource = resource;
+  }
+
+  get attributes(): ReadonlyArray<ApiBuilderAttributeConfig> {
+    return this.config.attributes;
   }
 
   get body(): ApiBuilderBody | undefined {
@@ -941,13 +945,13 @@ export class ApiBuilderOperation {
     return this.config.path;
   }
 
-  get parameters(): ApiBuilderParameter[] {
+  get parameters(): readonly ApiBuilderParameter[] {
     return this.config.parameters.map((
       (parameter) => new ApiBuilderParameter(parameter, this.service)
     ));
   }
 
-  get responses(): ApiBuilderResponse[] {
+  get responses(): readonly ApiBuilderResponse[] {
     return this.config.responses.map((response) => new ApiBuilderResponse(response, this.service));
   }
 
@@ -1008,7 +1012,7 @@ export interface ApiBuilderParameterConfig {
   readonly minimum?: number;
   readonly maximum?: number;
   readonly example?: string;
-  readonly attributes?: ApiBuilderAttributeConfig[];
+  readonly attributes?: readonly ApiBuilderAttributeConfig[];
 }
 
 export class ApiBuilderParameter {
@@ -1110,7 +1114,7 @@ export class ApiBuilderResource {
     this.service = service;
   }
 
-  get operations(): ApiBuilderOperation[] {
+  get operations(): readonly ApiBuilderOperation[] {
     return this.config.operations.map((
       (operation) => new ApiBuilderOperation(operation, this, this.service)
     ));
@@ -1295,25 +1299,25 @@ export class ApiBuilderService {
     return this.config.organization.key;
   }
 
-  get imports(): ApiBuilderImport[] {
+  get imports(): readonly ApiBuilderImport[] {
     const imports = this.config.imports.map((config) => new ApiBuilderImport(config, this));
     Object.defineProperty(this, 'imports', { value: imports });
     return imports;
   }
 
-  get enums(): ApiBuilderEnum[] {
+  get enums(): readonly ApiBuilderEnum[] {
     const enums = this.config.enums.map((config) => ApiBuilderEnum.fromConfig(config, this));
     Object.defineProperty(this, 'enums', { value: enums });
     return enums;
   }
 
-  get models(): ApiBuilderModel[] {
+  get models(): readonly ApiBuilderModel[] {
     const models = this.config.models.map((config) => ApiBuilderModel.fromConfig(config, this));
     Object.defineProperty(this, 'models', { value: models });
     return models;
   }
 
-  get unions(): ApiBuilderUnion[] {
+  get unions(): readonly ApiBuilderUnion[] {
     const unions = this.config.unions.map((config) => ApiBuilderUnion.fromConfig(config, this));
     Object.defineProperty(this, 'unions', { value: unions });
     return unions;
@@ -1363,7 +1367,7 @@ export class ApiBuilderService {
     return typesByShortName;
   }
 
-  get resources(): ApiBuilderResource[] {
+  get resources(): readonly ApiBuilderResource[] {
     const resources = this.config.resources
       .map((resource) => new ApiBuilderResource(resource, this));
     Object.defineProperty(this, 'resources', { value: resources });
@@ -1489,7 +1493,7 @@ export class ApiBuilderUnion {
     return this.config.deprecation;
   }
 
-  get types(): ApiBuilderUnionType[] {
+  get types(): readonly ApiBuilderUnionType[] {
     return this.config.types.map((type) => new ApiBuilderUnionType(type, this.service));
   }
 
